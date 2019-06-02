@@ -385,7 +385,9 @@
 	}
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+ @color: #415FFB;
+ @background:rgba(80, 200, 180, 0.1);
 	.calendar-tz {
 		width: 100%;
 		height: 100%;
