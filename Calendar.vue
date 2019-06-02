@@ -375,7 +375,7 @@
 				if (this.dates * 1) { //普通日期选择模式
 					this.$emit("callback", choose)
 				} else { //酒店入住模式
-					choose.countDays = (this.endDates * 1 - this.startDates * 1) / 86400 / 1000;
+					choose2.countDays = (this.endDates * 1 - this.startDates * 1) / 86400 / 1000;
 					if (this.startDates && this.endDates) {
 						this.$emit("callback", choose2)
 					}
