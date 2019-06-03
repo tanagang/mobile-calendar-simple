@@ -412,13 +412,19 @@
 </script>
 
 <style scoped>
+	div,ul,li,p,span,i,b,a{
+		margin:0;
+		padding:0;
+	}
 	.calendar-tz {
 		width: 100%;
 		height: 100%;
 		background: #fff;
 		position: relative;
-		overflow-y: scroll;
 		z-index: 9;
+	}
+	.calendar-tz::-webkit-scrollbar{
+		display: none;
 	}
 	.calendar-tz .closeDialog {
 		position: fixed;

@@ -373,14 +373,19 @@
 <style lang="less" scoped>
 	@color: #415FFB;
     @background:rgba(80, 200, 180, 0.1);
+	div,ul,li,p,span,i,b,a{
+		margin:0;
+		padding:0;
+	}
 	.calendar {
 		width: 100%;
 		height: 100%;
 		background: #fff;
 		position: fixed;
-		overflow-y: scroll;
 		z-index: 9;
-
+		&:-webkit-scrollbar{
+			display: none
+		}
 		.closeDialog {
 			position: fixed;
 			bottom: 0;
