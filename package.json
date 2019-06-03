@@ -1,0 +1,23 @@
+{
+  "name": "vue-calendar",
+  "version": "1.0.1",
+  "description": "支持日期选择，支持酒店入住-离开选择，同时可以自定义主题色（兼容uniApp）",
+  "main": "Calendar.vue",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tanagang/vue-calendar.git"
+  },
+  "keywords": [
+    "日历",
+    "酒店日历\u001b[D\u001b[D入住-离开日历选择"
+  ],
+  "author": "tanzheng",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tanagang/vue-calendar/issues"
+  },
+  "homepage": "https://github.com/tanagang/vue-calendar#readme"
+}
