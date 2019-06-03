@@ -1,6 +1,6 @@
 {
   "name": "mobile-calendar-simple",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "vue开发，支持日历选择，支持酒店入住-离开范围选择，同时可以自定义主题色（兼容uniApp）",
   "main": "Calendar.vue",
   "scripts": {
@@ -11,11 +11,11 @@
     "url": "git+https://github.com/tanagang/vue-calendar.git"
   },
   "keywords": [
-		"mobile",
-		"vue日期范围选择",
+    "mobile",
+    "vue日期范围选择",
     "日历",
-		"日历范围",
-		"日期范围",
+    "日历范围",
+    "日期范围",
     "酒店日历入住-离开范围选择"
   ],
   "author": "tanzheng",
