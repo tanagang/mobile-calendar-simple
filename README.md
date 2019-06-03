@@ -4,6 +4,7 @@ vue开发，支持日历选择，支持酒店入住-离开范围选择，同时�
 
 ### 使用方法
 首先项目中安装：npm install mobile-calendar-simple -S
+```javascript
 <template>
 	<div>
 		<Calendar :date="'2019-06-04'" />
@@ -17,6 +18,7 @@ vue开发，支持日历选择，支持酒店入住-离开范围选择，同时�
 		}
 	}
 </script>
+```
 
 ```diff
 - 注意：date（日历模式）与startDate、endDate（酒店模式）不能共存
