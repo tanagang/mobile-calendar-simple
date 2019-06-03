@@ -50,16 +50,22 @@
 					return ''
 				}
 			},
-			startDate: { //开始日期（入住酒店）
+			startDate: { //开始日期
 				type: [String, Object],
 				default () {
 					return ''
 				}
 			},
-			endDate: { //结束日期（离开酒店）
+			endDate: { //结束日期
 				type: [String, Object, Date],
 				default () {
 					return ''
+				}
+			},
+			mode: { //模式（默认1），1酒店，2飞机往返 
+				type: [String, Number],
+				default () {
+					return '1'
 				}
 			},
 			themeColor: {
@@ -299,9 +305,23 @@
 				}
 				if (!this.date && (this.startDate || this.endDate)) {
 					if (_date === this.startDates * 1) {
-						tip = '入住'
+						if(this.mode==2){
+							if(this.endDates*1==0){
+								tip='去/返'
+							}else{
+								tip = '去程'
+							}	
+						}else{
+							tip = '入住'
+						}	
+						
 					} else if (_date === this.endDates * 1) {
-						tip = '离开'
+						if(this.mode==2){
+							tip = '返程'
+						}else{
+							tip = '离开'
+						}	
+						
 					}
 				}
 
@@ -313,7 +333,7 @@
 				}
 
 				const _date = new Date(year + '/' + month + '/' + day) * 1
-				//设置入住和离开
+				//设置开始和结束
 				if (_date === this.startDates * 1 || (_date === this.endDates * 1)) {
 					return true
 				}
@@ -366,13 +386,15 @@
 
 				const startDateChoose = this.dateFormat(this.startDates)
 				const endDateChoose = this.dateFormat(this.endDates)
+				const startDateStr = startDateChoose.y + "-" + startDateChoose.m + "-" + startDateChoose.d
+				const endDateStr = endDateChoose.y + "-" + endDateChoose.m + "-" + endDateChoose.d
 				const choose2 = {
 					startDateTime: this.startDates,
 					endDateTime: this.endDates,
 					startDate: startDateChoose,
 					endDate: endDateChoose,
-					startDateStr: startDateChoose.y + "-" + startDateChoose.m + "-" + startDateChoose.d,
-					endDateStr: endDateChoose.y + "-" + endDateChoose.m + "-" + endDateChoose.d,
+					startDateStr: startDateStr,
+					endDateStr: endDateStr,
 					startRecent: '',
 					endRecent: ''
 				}
@@ -385,7 +407,7 @@
 					} else if (_date - this.today == 2 * 24 * 3600 * 1000) {
 						choose.recent = '后天'
 					}
-				} else { //酒店模式的recent
+				} else { //酒店和往返模式的recent
 					if (this.startDates == this.today) {
 						choose2.startRecent = '今天'
 					} else if (this.startDates - this.today == 24 * 3600 * 1000) {
@@ -405,11 +427,23 @@
 
 				if (this.isDate) { //普通日期选择模式
 					this.$emit("callback", choose)
-				} else { //酒店入住模式
+				} else { 
 					choose2.countDays = (this.endDates * 1 - this.startDates * 1) / 86400 / 1000;
-					if (this.startDates && this.endDates) {
-						this.$emit("callback", choose2)
-					}
+					if(this.mode==2){//往返模式
+						if (this.startDates&&!this.endDates) {//单日往返
+							choose2.endDate = choose2.startDate
+							choose2.endDateStr = choose2.startDateStr
+							choose2.endDateTime = choose2.startDateTime
+							choose2.endRecent = choose2.startRecent
+							this.$emit("callback", choose2)
+						}else if(this.startDates){//去程-返程
+							this.$emit("callback", choose2)
+						}
+					}else{//酒店模式
+						if (this.startDates && this.endDates) {
+							this.$emit("callback", choose2)
+						}
+					}	
 				}
 			}
 		}
