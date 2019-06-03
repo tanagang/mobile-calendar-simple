@@ -29,7 +29,8 @@
 				</ul>
 			</div>
 		</div>
-		<div style="height:90px"></div>
+		<slot></slot>
+		<!-- <div style="height:90px"></div> -->
 		<!-- <div class="closeDialog">
             <span class="icon-close" @click="closeDialog"></span>
         </div> -->
