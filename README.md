@@ -3,6 +3,7 @@ vue开发，支持日历选择，支持（范围选择）酒店入住-离开，�
   ![](https://file.40017.cn/tcyp/tz/calendar2.png)
   ![](https://file.40017.cn/tcyp/tz/calendar3.png)
 
+
 ### 使用方法
 首先项目中安装：npm install mobile-calendar-simple -S
 ```javascript
