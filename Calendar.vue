@@ -1,41 +1,44 @@
 <template>
 	<div class="calendar-tz">
-			<div class="calendar-header">
-				<div class="week-number">
-					<span v-for="(item,index) in weekList" :key="item"><p :style="{color:(index==0||index==weekList.length-1)?getThemeColor:''}">{{item}}</p></span>
-				</div>
+		<div class="calendar-header">
+			<div class="week-number">
+				<span v-for="(item,index) in weekList" :key="item">
+					<p :style="{color:(index==0||index==weekList.length-1)?getThemeColor:''}">{{item}}</p>
+				</span>
 			</div>
-			<div class="ti" :style='{paddingTop:"44px"}'>
-				<div class="calendar-wrapper" v-for="(item,index) in calendar" :key="index">
-					<div class="calendar-title">{{item.year}} 年 {{item.month}} 月</div>
-					<!--如果普通日期选择-->
-					<ul class="each-month" v-if="date||(!date&&!startDate&&!endDate)">
-						<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" @click="chooseDate($event,day, item.month, item.year)">
-							<div :class="[addClassName(day, item.month, item.year)]"  :style="{background:getBackground(day, item.month, item.year),color:getWeekColor(day, item.month, item.year)}">
-								{{ setFestival(day, item.month, item.year)!= 0 ? setFestival(day, item.month, item.year) : day}}
-							</div>
-							<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:(index==0||index==weekList.length-1)?getThemeColor:''}"></span>
-						</li>
-					</ul>
-					<!--如果酒店入住离开选择-->
-					<ul class="each-month" v-else>
-						<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :style="{background:addClassName2(day, item.month, item.year)}"
-						 @click="chooseDate($event,day, item.month, item.year)">
-							<div :class="[addClassName(day, item.month, item.year),{'trip-time': isCurrent(day, item.month, item.year)}]"  :style="{background:isCurrent(day, item.month, item.year)?getThemeColor:'',color:getWeekColor(day, item.month, item.year)}">
-								{{ setFestival(day, item.month, item.year)!= 0 ? setFestival(day, item.month, item.year) : day}}
-							</div>
-							<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:getThemeColor}"></span>
-						</li>
-					</ul>
-				</div>
+		</div>
+		<div class="ti" :style='{paddingTop:"44px"}'>
+			<div class="calendar-wrapper" v-for="(item,index) in calendar" :key="index">
+				<div class="calendar-title">{{item.year}} 年 {{item.month}} 月</div>
+				<!--如果普通日期选择-->
+				<ul class="each-month" v-if="date||(!date&&!startDate&&!endDate)">
+					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" @click="chooseDate($event,day, item.month, item.year)">
+						<div :class="[addClassName(day, item.month, item.year)]" :style="{background:getBackground(day, item.month, item.year),color:getWeekColor(day, item.month, item.year)}">
+							{{ setFestival(day, item.month, item.year)!= 0 ? setFestival(day, item.month, item.year) : day}}
+						</div>
+						<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:(index==0||index==weekList.length-1)?getThemeColor:''}"></span>
+					</li>
+				</ul>
+				<!--如果酒店入住离开选择-->
+				<ul class="each-month" v-else>
+					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :style="{background:addClassName2(day, item.month, item.year)}"
+					 @click="chooseDate($event,day, item.month, item.year)">
+						<div :class="[addClassName(day, item.month, item.year),{'trip-time': isCurrent(day, item.month, item.year)}]"
+						 :style="{background:isCurrent(day, item.month, item.year)?getThemeColor:'',color:getWeekColor(day, item.month, item.year)}">
+							{{ setFestival(day, item.month, item.year)!= 0 ? setFestival(day, item.month, item.year) : day}}
+						</div>
+						<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:getThemeColor}"></span>
+					</li>
+				</ul>
 			</div>
-			<slot></slot>
-		    <!--<div style="height:50px"></div>
+		</div>
+		<slot></slot>
+		<!--<div style="height:50px"></div>
 				<div class="closeDialog">
 	            <span class="icon-close" @click="closeDialog"></span>
 	        </div> -->
 	</div>
-		
+
 </template>
 
 <script>
@@ -59,7 +62,7 @@
 					return ''
 				}
 			},
-			themeColor:{
+			themeColor: {
 				type: [String, Object, Date],
 				default () {
 					return '#415FFB'
@@ -71,7 +74,7 @@
 				endDates: '',
 				startDates: '',
 				dates: '',
-				isDate:false,
+				isDate: false,
 				betweenDate: '', //显示日历的时间段
 				weekList: ['日', '一', '二', '三', '四', '五', '六'],
 				calendar: [],
@@ -102,20 +105,22 @@
 			}
 		},
 		computed: {
-			getThemeColor() {			
+			getThemeColor() {
 				var hex = this.themeColor
-				if(hex.length==4){
+				if (hex.length == 4) {
 					hex = `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`
 				}
-				var str = "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" + hex.slice(5, 7)) + ",1)";
+				var str = "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" +
+					hex.slice(5, 7)) + ",1)";
 				return str
 			},
 			getBetweenColor() {
 				var hex = this.themeColor
-				if(hex.length==4){
+				if (hex.length == 4) {
 					hex = `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`
 				}
-				var str = "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" + hex.slice(5, 7)) + ",0.1)";
+				var str = "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" +
+					hex.slice(5, 7)) + ",0.1)";
 				return str
 			},
 		},
@@ -210,15 +215,15 @@
 				}
 			},
 			//获取周末的样式
-			getWeekColor(day, month, year){
+			getWeekColor(day, month, year) {
 				const _date = new Date(year + '/' + month + '/' + day)
 				//设置周末的字体样式
-				if (_date.getDay() === 0 || _date.getDay() === 6) { 
+				if (_date.getDay() === 0 || _date.getDay() === 6) {
 					return this.getThemeColor
 				}
 			},
 			//获取普通日期选中样式背景
-			getBackground(day, month, year){
+			getBackground(day, month, year) {
 				const _date = new Date(year + '/' + month + '/' + day)
 				if (_date * 1 === this.dates * 1) {
 					return this.getThemeColor
@@ -292,7 +297,7 @@
 				} else if (_date - this.today === 2 * 24 * 3600 * 1000) {
 					tip = '后天'
 				}
-				if (!this.date&&(this.startDate||this.endDate)) {
+				if (!this.date && (this.startDate || this.endDate)) {
 					if (_date === this.startDates * 1) {
 						tip = '入住'
 					} else if (_date === this.endDates * 1) {
@@ -332,10 +337,10 @@
 				if (_date < this.today) {
 					return;
 				}
-				if (_date == this.today||this.dates*1) {
+				if (_date == this.today || this.dates * 1) {
 					this.dates = _date
 				}
-				
+
 				if (this.startDates * 1 && this.endDates * 1 && _date > this.endDates * 1) {
 					this.startDates = _date;
 					this.endDates = "";
@@ -355,10 +360,10 @@
 				const choose = {
 					dateTime: this.dates * 1,
 					date: dateChoose,
-					dateStr:dateChoose.y+"-"+dateChoose.m+"-"+dateChoose.d,
+					dateStr: dateChoose.y + "-" + dateChoose.m + "-" + dateChoose.d,
 					recent: ''
 				}
-				
+
 				const startDateChoose = this.dateFormat(this.startDates)
 				const endDateChoose = this.dateFormat(this.endDates)
 				const choose2 = {
@@ -366,13 +371,13 @@
 					endDateTime: this.endDates,
 					startDate: startDateChoose,
 					endDate: endDateChoose,
-					startDateStr : startDateChoose.y+"-"+startDateChoose.m+"-"+startDateChoose.d,
-					endDateStr : endDateChoose.y+"-"+endDateChoose.m+"-"+endDateChoose.d,
+					startDateStr: startDateChoose.y + "-" + startDateChoose.m + "-" + startDateChoose.d,
+					endDateStr: endDateChoose.y + "-" + endDateChoose.m + "-" + endDateChoose.d,
 					startRecent: '',
 					endRecent: ''
 				}
-				
-				if(this.isDate){//普通模式的recent
+
+				if (this.isDate) { //普通模式的recent
 					if (_date == this.today) {
 						choose.recent = '今天'
 					} else if (_date - this.today == 24 * 3600 * 1000) {
@@ -380,7 +385,7 @@
 					} else if (_date - this.today == 2 * 24 * 3600 * 1000) {
 						choose.recent = '后天'
 					}
-				}else{//酒店模式的recent
+				} else { //酒店模式的recent
 					if (this.startDates == this.today) {
 						choose2.startRecent = '今天'
 					} else if (this.startDates - this.today == 24 * 3600 * 1000) {
@@ -388,7 +393,7 @@
 					} else if (this.startDates - this.today == 2 * 24 * 3600 * 1000) {
 						choose2.startRecent = '后天'
 					}
-					
+
 					if (this.endDates == this.today) {
 						choose2.endRecent = '今天'
 					} else if (this.endDates - this.today == 24 * 3600 * 1000) {
@@ -412,10 +417,18 @@
 </script>
 
 <style scoped>
-	div,ul,li,p,span,i,b,a{
-		margin:0;
-		padding:0;
+	div,
+	ul,
+	li,
+	p,
+	span,
+	i,
+	b,
+	a {
+		margin: 0;
+		padding: 0;
 	}
+
 	.calendar-tz {
 		width: 100%;
 		height: 100%;
@@ -423,9 +436,11 @@
 		position: relative;
 		z-index: 9;
 	}
-	.calendar-tz::-webkit-scrollbar{
+
+	.calendar-tz::-webkit-scrollbar {
 		display: none;
 	}
+
 	.calendar-tz .closeDialog {
 		position: fixed;
 		bottom: 50px;
@@ -436,12 +451,12 @@
 		text-align: center;
 		background: rgba(255, 255, 255, 0.9);
 	}
-	
+
 	.calendar-tz .ti {
 		color: #333;
 		font-size: 16px;
 	}
-	
+
 	.calendar-tz .calendar-header {
 		position: fixed;
 		width: 100%;
@@ -449,25 +464,26 @@
 		z-index: 9;
 		box-shadow: 0 2px 15px rgba(100, 100, 100, 0.1);
 	}
+
 	.calendar-tz .week-number {
 		background: #fff;
 		width: 100%;
 	}
-	.calendar-tz .week-number span{
+
+	.calendar-tz .week-number span {
 		display: inline-block;
 		text-align: center;
 		height: 40px;
 		line-height: 40px;
 		width: 14.28%;
-		color:#333;
+		color: #333;
 		font-size: 16px;
 	}
-	
+
 	.calendar-tz .calendar-wrapper {
 		color: #333;
 		padding-top: 10px;
 	}
-
 
 	.calendar-tz .calendar-title {
 		padding-bottom: 10px;
@@ -488,54 +504,56 @@
 		font-size: 0;
 		border-bottom: 1px solid #F4F4F4;
 	}
-	
+
 	.calendar-tz .each-day {
 		position: relative;
 		display: inline-block;
 		text-align: center;
 		vertical-align: middle;
-		width: 14.2857143%;
+		width: 14.28%;
 		font-size: 16px;
 		height: 50px;
 		line-height: 50px;
 	}
-	
 
 	.calendar-tz .each-day div {
-		vertical-align: 10px;
+		vertical-align: 8px;
 		display: inline-block;
 		height: 28px;
 		width: 28px;
 		line-height: 28px;
 	}
-	.calendar-tz .each-day.between{
-		background:rgba(80, 200, 180, 0.1);
+
+	.calendar-tz .each-day.between {
+		background: rgba(80, 200, 180, 0.1);
 	}
+
 	.calendar-tz .disabled {
 		color: #ccc !important;
 	}
-	
+
 	.calendar-tz .today {
 		background: #E7E7E7;
 		border-radius: 4px;
 	}
-	
+
 	.calendar-tz .trip-time {
 		background: #415FFB;
 		color: #fff !important;
 		border-radius: 4px;
 	}
-	
+
 	.calendar-tz .weekend {
 		color: #415FFB;
 	}
-	
-	.calendar-tz .jia,.calendar-tz .recent {
+
+	.calendar-tz .jia,
+	.calendar-tz .recent {
 		position: absolute;
 		line-height: 12px;
 		color: #415FFB;
 	}
-	
+
 	.calendar-tz .recent {
 		font-size: 10px;
 		width: 100%;
@@ -543,10 +561,8 @@
 		bottom: 4px;
 		left: 0;
 	}
-	
+
 	.calendar-tz .festival {
 		font-size: 14px;
 	}
-	
-	
 </style>

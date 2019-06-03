@@ -64,7 +64,7 @@
 				endDates: '',
 				startDates: '',
 				dates: '',
-				isDate:false,//是否是普通日历模式
+				isDate: false, //是否是普通日历模式
 				betweenDate: '', //显示日历的时间段
 				weekList: ['日', '一', '二', '三', '四', '五', '六'],
 				calendar: [],
@@ -251,7 +251,7 @@
 				} else if (_date - this.today === 2 * 24 * 3600 * 1000) {
 					tip = '后天'
 				}
-				if (!this.date&&(this.startDate||this.endDate)) {
+				if (!this.date && (this.startDate || this.endDate)) {
 					if (_date === this.startDates * 1) {
 						tip = '入住'
 					} else if (_date === this.endDates * 1) {
@@ -291,10 +291,10 @@
 				if (_date < this.today) {
 					return;
 				}
-				if (_date == this.today||this.dates * 1) {
+				if (_date == this.today || this.dates * 1) {
 					this.dates = _date
 				}
-				
+
 				if (this.startDates * 1 && this.endDates * 1 && _date > this.endDates * 1) {
 					this.startDates = _date;
 					this.endDates = "";
@@ -314,10 +314,10 @@
 				const choose = {
 					dateTime: this.dates * 1,
 					date: dateChoose,
-					dateStr:dateChoose.y+"-"+dateChoose.m+"-"+dateChoose.d,
+					dateStr: dateChoose.y + "-" + dateChoose.m + "-" + dateChoose.d,
 					recent: ''
 				}
-				
+
 				const startDateChoose = this.dateFormat(this.startDates)
 				const endDateChoose = this.dateFormat(this.endDates)
 				const choose2 = {
@@ -325,13 +325,13 @@
 					endDateTime: this.endDates,
 					startDate: startDateChoose,
 					endDate: endDateChoose,
-					startDateStr : startDateChoose.y+"-"+startDateChoose.m+"-"+startDateChoose.d,
-					endDateStr : endDateChoose.y+"-"+endDateChoose.m+"-"+endDateChoose.d,
+					startDateStr: startDateChoose.y + "-" + startDateChoose.m + "-" + startDateChoose.d,
+					endDateStr: endDateChoose.y + "-" + endDateChoose.m + "-" + endDateChoose.d,
 					startRecent: '',
 					endRecent: ''
 				}
 
-				if(this.isDate){//普通模式的recent
+				if (this.isDate) { //普通模式的recent
 					if (_date == this.today) {
 						choose.recent = '今天'
 					} else if (_date - this.today == 24 * 3600 * 1000) {
@@ -339,7 +339,7 @@
 					} else if (_date - this.today == 2 * 24 * 3600 * 1000) {
 						choose.recent = '后天'
 					}
-				}else{//酒店模式的recent
+				} else { //酒店模式的recent
 					if (this.startDates == this.today) {
 						choose2.startRecent = '今天'
 					} else if (this.startDates - this.today == 24 * 3600 * 1000) {
@@ -347,7 +347,7 @@
 					} else if (this.startDates - this.today == 2 * 24 * 3600 * 1000) {
 						choose2.startRecent = '后天'
 					}
-					
+
 					if (this.endDates == this.today) {
 						choose2.endRecent = '今天'
 					} else if (this.endDates - this.today == 24 * 3600 * 1000) {
@@ -356,7 +356,7 @@
 						choose2.endRecent = '后天'
 					}
 				}
-				
+
 				if (this.isDate) { //普通日期选择模式
 					this.$emit("callback", choose)
 				} else { //酒店入住模式
@@ -372,20 +372,31 @@
 
 <style lang="less" scoped>
 	@color: #415FFB;
-    @background:rgba(80, 200, 180, 0.1);
-	div,ul,li,p,span,i,b,a{
-		margin:0;
-		padding:0;
+	@background: rgba(80, 200, 180, 0.1);
+
+	div,
+	ul,
+	li,
+	p,
+	span,
+	i,
+	b,
+	a {
+		margin: 0;
+		padding: 0;
 	}
+
 	.calendar {
 		width: 100%;
 		height: 100%;
 		background: #fff;
 		position: fixed;
 		z-index: 9;
-		&:-webkit-scrollbar{
+
+		&:-webkit-scrollbar {
 			display: none
 		}
+
 		.closeDialog {
 			position: fixed;
 			bottom: 0;
@@ -433,6 +444,7 @@
 		.calendar-wrapper {
 			color: #333;
 			padding-top: 10px;
+
 			.calendar-title {
 				width: 100%;
 				color: #333;
@@ -456,7 +468,7 @@
 					display: inline-block;
 					text-align: center;
 					vertical-align: middle;
-					width: 14.2857143%;
+					width: 14.28%;
 					font-size: 16px;
 					height: 50px;
 					line-height: 50px;
@@ -466,7 +478,7 @@
 					}
 
 					div {
-						vertical-align: 10px;
+						vertical-align: 8px;
 						display: inline-block;
 						height: 28px;
 						width: 28px;
