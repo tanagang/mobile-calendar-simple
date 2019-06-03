@@ -7,7 +7,7 @@
 			</div>
 			<div class="ti" :style='{paddingTop:"44px"}'>
 				<div class="calendar-wrapper" v-for="(item,index) in calendar" :key="index">
-					<view class="calendar-title">{{item.year}} 年 {{item.month}} 月</view>
+					<div class="calendar-title">{{item.year}} 年 {{item.month}} 月</div>
 					<!--如果普通日期选择-->
 					<ul class="each-month" v-if="date||(!date&&!startDate&&!endDate)">
 						<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" @click="chooseDate($event,day, item.month, item.year)">
@@ -438,7 +438,7 @@
 	}
 	
 	.calendar-tz .ti {
-		color: #000;
+		color: #333;
 		font-size: 16px;
 	}
 	
@@ -459,23 +459,20 @@
 		height: 40px;
 		line-height: 40px;
 		width: 14.28%;
+		color:#333;
 		font-size: 16px;
 	}
 	
 	.calendar-tz .calendar-wrapper {
-		position: relative;
-		color: #000;
-		padding-top: 15px;
+		color: #333;
+		padding-top: 10px;
 	}
 
 
 	.calendar-tz .calendar-title {
-		position: sticky;
-		position: -webkit-sticky;
-		z-index: 8;
+		padding-bottom: 10px;
 		width: 100%;
-		left: 0;
-		color: #000;
+		color: #333;
 		text-align: center;
 		font-size: 16px;
 		font-weight: 400;
