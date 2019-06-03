@@ -310,16 +310,23 @@
 					this.endDates = _date;
 				}
 
+				const dateChoose = this.dateFormat(this.dates)
 				const choose = {
-					dateStr: this.dates * 1,
-					date: this.dateFormat(this.dates),
+					dateTime: this.dates * 1,
+					date: dateChoose,
+					dateStr:dateChoose.y+"-"+dateChoose.m+"-"+dateChoose.d,
 					recent: ''
 				}
+				
+				const startDateChoose = this.dateFormat(this.startDates)
+				const endDateChoose = this.dateFormat(this.endDates)
 				const choose2 = {
-					startDateStr: this.startDates,
-					endDateStr: this.endDates,
-					startDate: this.dateFormat(this.startDates),
-					endDate: this.dateFormat(this.endDates),
+					startDateTime: this.startDates,
+					endDateTime: this.endDates,
+					startDate: startDateChoose,
+					endDate: endDateChoose,
+					startDateStr : startDateChoose.y+"-"+startDateChoose.m+"-"+startDateChoose.d,
+					endDateStr : endDateChoose.y+"-"+endDateChoose.m+"-"+endDateChoose.d,
 					startRecent: '',
 					endRecent: ''
 				}
