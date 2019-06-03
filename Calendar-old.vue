@@ -63,6 +63,7 @@
 				endDates: '',
 				startDates: '',
 				dates: '',
+				isDate:false,//是否是普通日历模式
 				betweenDate: '', //显示日历的时间段
 				weekList: ['日', '一', '二', '三', '四', '五', '六'],
 				calendar: [],
@@ -99,6 +100,7 @@
 			init() {
 				if (this.date) {
 					this.dates = new Date(this.date.replace(/-/g, '/'))
+					this.isDate = true
 				}
 				if (this.startDate) {
 					this.startDates = new Date(this.startDate.replace(/-/g, '/'))
@@ -111,12 +113,14 @@
 
 				if (this.date && (this.startDate || this.endDate)) {
 					console.warn(':date属性和 (:startDate,:endDate) 不能同时设置')
+					this.isDate = true
 				}
 				if (!this.date && !this.startDate && this.endDate) {
 					this.startDates = new Date(this.today * 1)
 				}
 				if (!this.date && !this.startDate && !this.endDate) {
 					this.dates = new Date(this.today * 1)
+					this.isDate = true
 				}
 
 				if (this.betweenDate === '') {
@@ -286,12 +290,10 @@
 				if (_date < this.today) {
 					return;
 				}
-				if (_date == this.today) {
+				if (_date == this.today||this.dates * 1) {
 					this.dates = _date
 				}
-				if (this.dates * 1) {
-					this.dates = _date
-				}
+				
 				if (this.startDates * 1 && this.endDates * 1 && _date > this.endDates * 1) {
 					this.startDates = _date;
 					this.endDates = "";
@@ -317,21 +319,37 @@
 					endDateStr: this.endDates,
 					startDate: this.dateFormat(this.startDates),
 					endDate: this.dateFormat(this.endDates),
-					recent: ''
+					startRecent: '',
+					endRecent: ''
 				}
 
-				if (_date == this.today) {
-					choose.recent = '今天'
-					choose2.recent = '今天'
-				} else if (_date - this.today == 24 * 3600 * 1000) {
-					choose.recent = '明天'
-					choose2.recent = '明天'
-				} else if (_date - this.today == 2 * 24 * 3600 * 1000) {
-					choose.recent = '后天'
-					choose2.recent = '后天'
+				if(this.isDate){//普通模式的recent
+					if (_date == this.today) {
+						choose.recent = '今天'
+					} else if (_date - this.today == 24 * 3600 * 1000) {
+						choose.recent = '明天'
+					} else if (_date - this.today == 2 * 24 * 3600 * 1000) {
+						choose.recent = '后天'
+					}
+				}else{//酒店模式的recent
+					if (this.startDates == this.today) {
+						choose2.startRecent = '今天'
+					} else if (this.startDates - this.today == 24 * 3600 * 1000) {
+						choose2.startRecent = '明天'
+					} else if (this.startDates - this.today == 2 * 24 * 3600 * 1000) {
+						choose2.startRecent = '后天'
+					}
+					
+					if (this.endDates == this.today) {
+						choose2.endRecent = '今天'
+					} else if (this.endDates - this.today == 24 * 3600 * 1000) {
+						choose2.endRecent = '明天'
+					} else if (this.endDates - this.today == 2 * 24 * 3600 * 1000) {
+						choose2.endRecent = '后天'
+					}
 				}
-
-				if (this.dates * 1) { //普通日期选择模式
+				
+				if (this.isDate) { //普通日期选择模式
 					this.$emit("callback", choose)
 				} else { //酒店入住模式
 					choose2.countDays = (this.endDates * 1 - this.startDates * 1) / 86400 / 1000;
@@ -351,9 +369,10 @@
 		width: 100%;
 		height: 100%;
 		background: #fff;
-		position: relative;
+		position: fixed;
 		overflow-y: scroll;
 		z-index: 9;
+
 		.closeDialog {
 			position: fixed;
 			bottom: 0;
@@ -453,13 +472,13 @@
 
 					.today {
 						background: #E7E7E7;
-						border-radius: 5px;
+						border-radius: 4px;
 					}
 
 					.trip-time {
 						background: @color;
 						color: #fff !important;
-						border-radius: 5px;
+						border-radius: 4px;
 					}
 
 					.weekend {
