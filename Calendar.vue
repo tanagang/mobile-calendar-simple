@@ -411,9 +411,7 @@
 	}
 </script>
 
-<style lang="less" scoped>
-	@color: #415FFB;
-	@background:rgba(80, 200, 180, 0.1);
+<style scoped>
 	.calendar-tz {
 		width: 100%;
 		height: 100%;
@@ -507,7 +505,9 @@
 		width: 28px;
 		line-height: 28px;
 	}
-	
+	.calendar-tz .each-day.between{
+		background:rgba(80, 200, 180, 0.1);
+	}
 	.calendar-tz .disabled {
 		color: #ccc !important;
 	}
@@ -518,19 +518,19 @@
 	}
 	
 	.calendar-tz .trip-time {
-		background: @color;
+		background: #415FFB;
 		color: #fff !important;
 		border-radius: 4px;
 	}
 	
 	.calendar-tz .weekend {
-		color: @color;
+		color: #415FFB;
 	}
 	
 	.calendar-tz .jia,.calendar-tz .recent {
 		position: absolute;
 		line-height: 12px;
-		color: @color;
+		color: #415FFB;
 	}
 	
 	.calendar-tz .recent {
