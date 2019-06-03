@@ -1,5 +1,6 @@
 vue开发，支持日历选择，支持酒店入住-离开范围选择，同时可以自定义主题色（兼容uniApp）
-  ![](https://file.40017.cn/tcyp/tz/calendar.png)![](https://file.40017.cn/tcyp/tz/calendar.png)
+  ![](https://file.40017.cn/tcyp/tz/calendar1.png)
+  ![](https://file.40017.cn/tcyp/tz/calendar2.png)
 
 ### 使用方法
 首先项目中安装：npm install mobile-calendar-simple -S
