@@ -7,25 +7,25 @@
 				</span>
 			</div>
 		</div>
-		<div class="ti" :style='{paddingTop:"44px"}'>
+		<div class="ti">
 			<div class="calendar-wrapper" v-for="(item,index) in calendar" :key="index">
 				<div class="calendar-title">{{item.year}} 年 {{item.month}} 月</div>
 				<!--如果普通日期选择-->
 				<ul class="each-month" v-if="date||(!date&&!startDate&&!endDate)">
 					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" @click="chooseDate($event,day, item.month, item.year)">
 						<div :class="[addClassName(day, item.month, item.year)]" :style="{background:getBackground(day, item.month, item.year),color:getWeekColor(day, item.month, item.year)}">
-							{{ setFestival(day, item.month, item.year)!= 0 ? setFestival(day, item.month, item.year) : day}}
+							{{ day}}
 						</div>
-						<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:(index==0||index==weekList.length-1)?getThemeColor:''}"></span>
+						<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:getThemeColor}"></span>
 					</li>
 				</ul>
 				<!--如果酒店入住离开选择-->
 				<ul class="each-month" v-else>
 					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :style="{background:addClassName2(day, item.month, item.year)}"
 					 @click="chooseDate($event,day, item.month, item.year)">
-						<div :class="[addClassName(day, item.month, item.year),{'trip-time': isCurrent(day, item.month, item.year)}]"
+						<div :class="[addClassName(day, item.month, item.year),{'clicktime': isCurrent(day, item.month, item.year)}]"
 						 :style="{background:isCurrent(day, item.month, item.year)?getThemeColor:'',color:getWeekColor(day, item.month, item.year)}">
-							{{ setFestival(day, item.month, item.year)!= 0 ? setFestival(day, item.month, item.year) : day}}
+							{{ day}}
 						</div>
 						<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:getThemeColor}"></span>
 					</li>
@@ -33,10 +33,6 @@
 			</div>
 		</div>
 		<slot></slot>
-		<!--<div style="height:50px"></div>
-				<div class="closeDialog">
-	            <span class="icon-close" @click="closeDialog"></span>
-	        </div> -->
 	</div>
 
 </template>
@@ -83,31 +79,7 @@
 				isDate: false,
 				betweenDate: '', //显示日历的时间段
 				weekList: ['日', '一', '二', '三', '四', '五', '六'],
-				calendar: [],
-				festival: {
-					// 2018
-					// "2018-1-1": "元旦",
-					// "2018-2-15": "除夕",
-					// "2018-2-16": "春节",
-					// "2018-3-2": "元宵节",
-					// "2018-4-5": "清明节",
-					// "2018-5-31": "初四",
-					// "2018-5-1": "五一",
-					// "2018-5-13": "母亲节",
-					// "2018-6-1": "六一",
-					// "2018-6-18": "端午",
-					// "2018-7-1": "建党节",
-					// "2018-8-1": "建军节",
-					// "2018-8-17": "七夕",
-					// "2018-9-10": "教师节",
-					// "2018-9-24": "中秋节",
-					// "2018-10-1": "国庆",
-					// "2018-10-17": "重阳节",
-					// "2018-10-22": "感恩节",
-					// "2018-12-24": "平安夜",
-					// "2018-12-25": "圣诞节",
-					// "2019-1-1": "元旦"
-				}
+				calendar: []
 			}
 		},
 		computed: {
@@ -170,9 +142,6 @@
 				this.createClendar(); //创建日历数据
 
 			},
-			closeDialog() {
-				this.$emit("close");
-			},
 			//创建每个月日历数据，传入月份1号前面用null填充
 			createDayList(month, year) {
 				const count = this.getDayNum(month, year),
@@ -201,7 +170,7 @@
 				const endY = this.betweenDate.getFullYear(),
 					endM = this.betweenDate.getMonth() + 1,
 					interval = (endY - this.year) * 12 + endM - this.month;
-				for (let i = 0; i <= interval; i++) {
+				for (let i = 0; i < interval; i++) {
 					let month = this.month + i,
 						year = this.year,
 						_monthData = {
@@ -241,11 +210,7 @@
 					return;
 				}
 				const _date = new Date(year + '/' + month + '/' + day)
-				let className = [],
-					festival = this.festival[year + "/" + month + "/" + day];
-				// if (_date.getDay() === 0 || _date.getDay() === 6) { //周末或周六样式
-				// 	className.push('weekend')
-				// }
+				let className = []
 				if (_date * 1 === this.today) {
 					className.push('today');
 				}
@@ -253,10 +218,8 @@
 				if (_date * 1 < this.today) { //当天之前不可选
 					className.push('disabled')
 				} else if (_date * 1 === this.dates * 1) {
-					className.push(' trip-time');
+					className.push(' clicktime');
 				}
-
-				className.push('festival')
 				return className.join(' ');
 			},
 			addClassName2(day, month, year) {
@@ -264,12 +227,9 @@
 					return;
 				}
 				const _date = new Date(year + '/' + month + '/' + day) * 1
-				//let className = []
 				if (_date >= this.startDates * 1 && _date <= this.endDates * 1) {
-					//className.push('between')
 					return this.getBetweenColor
 				}
-				//return className.join(' ');
 			},
 			//清除时间 时 分 秒 毫秒
 			resetTime(date) {
@@ -278,15 +238,6 @@
 				date.setSeconds(0);
 				date.setMilliseconds(0);
 				return date;
-			},
-			//设置日期和假日
-			setFestival(day, month, year) {
-				const festivalStr = this.festival[year + "/" + month + "/" + day]
-				if (festivalStr) {
-					return festivalStr
-				} else {
-					return 0;
-				}
 			},
 			//设置今天，明天，后天
 			setTip(day, month, year) {
@@ -489,6 +440,7 @@
 	.calendar-tz .ti {
 		color: #333;
 		font-size: 16px;
+		padding-top:44px;
 	}
 
 	.calendar-tz .calendar-header {
@@ -553,6 +505,7 @@
 	.calendar-tz .each-day div {
 		vertical-align: 8px;
 		display: inline-block;
+		color:#666;
 		height: 28px;
 		width: 28px;
 		line-height: 28px;
@@ -562,26 +515,24 @@
 		background: rgba(80, 200, 180, 0.1);
 	}
 
-	.calendar-tz .disabled {
-		color: #ccc !important;
-	}
 
-	.calendar-tz .today {
+	.calendar-tz div.weekend {
+		color: #415FFB;
+	}
+	.calendar-tz div.today {
 		background: #E7E7E7;
 		border-radius: 4px;
 	}
 
-	.calendar-tz .trip-time {
+	.calendar-tz  div.clicktime {
 		background: #415FFB;
-		color: #fff !important;
+		color: #fff!important;
 		border-radius: 4px;
 	}
-
-	.calendar-tz .weekend {
-		color: #415FFB;
+	.calendar-tz  div.disabled {
+		color: #ccc!important;
 	}
-
-	.calendar-tz .jia,
+	
 	.calendar-tz .recent {
 		position: absolute;
 		line-height: 12px;
@@ -589,14 +540,10 @@
 	}
 
 	.calendar-tz .recent {
-		font-size: 10px;
+		font-size: 12px;
 		width: 100%;
 		text-align: center;
 		bottom: 4px;
 		left: 0;
-	}
-
-	.calendar-tz .festival {
-		font-size: 14px;
 	}
 </style>

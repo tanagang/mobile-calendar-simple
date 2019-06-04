@@ -5,24 +5,24 @@
 				<span v-for="item in weekList" v-text="item" :key="item"></span>
 			</div>
 		</div>
-		<div class="ti" :style='{marginTop:"44px"}'>
+		<div class="ti">
 			<div class="calendar-wrapper" v-for="(item,index) in calendar" :key="index">
 				<div class="calendar-title">{{item.year}} 年 {{item.month}} 月</div>
 				<!--如果普通日期选择-->
 				<ul class="each-month" v-if="date||(!date&&!startDate&&!endDate)">
-					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" @click="chooseDate($event,day, item.month, item.year)">
+					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" @click="chooseDate(day, item.month, item.year)">
 						<div :class="[addClassName(day, item.month, item.year)]">
-							{{ setFestival(day, item.month, item.year)!= 0 ? setFestival(day, item.month, item.year) : day}}
+							{{day}}
 						</div>
-						<span class="recent" v-text="setTip(day, item.month, item.year)"></span>
+						<span class="recent">{{setTip(day, item.month, item.year)}}</span>
 					</li>
 				</ul>
 				<!--如果酒店入住离开选择-->
 				<ul class="each-month" v-else>
-					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :class="[addClassName2(day, item.month, item.year)]"
-					 @click="chooseDate($event,day, item.month, item.year)">
-						<div :class="[addClassName(day, item.month, item.year),{'trip-time': isCurrent(day, item.month, item.year)}]">
-							{{ setFestival(day, item.month, item.year)!= 0 ? setFestival(day, item.month, item.year) : day}}
+					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx"  :class="[addClassName2(day, item.month, item.year)]"
+					 @click="chooseDate(day, item.month, item.year)">
+						<div :class="[addClassName(day, item.month, item.year),{'clicktime': isCurrent(day, item.month, item.year)}]">
+							{{ day}}
 						</div>
 						<span class="recent" v-text="setTip(day, item.month, item.year)"></span>
 					</li>
@@ -30,10 +30,6 @@
 			</div>
 		</div>
 		<slot></slot>
-		<!-- <div style="height:90px"></div> -->
-		<!-- <div class="closeDialog">
-            <span class="icon-close" @click="closeDialog"></span>
-        </div> -->
 	</div>
 </template>
 
@@ -58,6 +54,12 @@
 					return ''
 				}
 			},
+			mode: { //模式（默认1），1酒店，2飞机往返 
+				type: [String, Number],
+				default () {
+					return '1'
+				}
+			},
 		},
 		data() {
 			return {
@@ -67,31 +69,7 @@
 				isDate: false, //是否是普通日历模式
 				betweenDate: '', //显示日历的时间段
 				weekList: ['日', '一', '二', '三', '四', '五', '六'],
-				calendar: [],
-				festival: {
-					// 2018
-					// "2018-1-1": "元旦",
-					// "2018-2-15": "除夕",
-					// "2018-2-16": "春节",
-					// "2018-3-2": "元宵节",
-					// "2018-4-5": "清明节",
-					// "2018-5-31": "初四",
-					// "2018-5-1": "五一",
-					// "2018-5-13": "母亲节",
-					// "2018-6-1": "六一",
-					// "2018-6-18": "端午",
-					// "2018-7-1": "建党节",
-					// "2018-8-1": "建军节",
-					// "2018-8-17": "七夕",
-					// "2018-9-10": "教师节",
-					// "2018-9-24": "中秋节",
-					// "2018-10-1": "国庆",
-					// "2018-10-17": "重阳节",
-					// "2018-10-22": "感恩节",
-					// "2018-12-24": "平安夜",
-					// "2018-12-25": "圣诞节",
-					// "2019-1-1": "元旦"
-				}
+				calendar: []
 			}
 		},
 		mounted() {
@@ -109,9 +87,9 @@
 				if (this.endDate) {
 					this.endDates = new Date(this.endDate.replace(/-/g, '/'))
 				}
-
+				
 				this.today = new Date(new Date().toLocaleDateString()).getTime()
-
+				
 				if (this.date && (this.startDate || this.endDate)) {
 					console.warn(':date属性和 (:startDate,:endDate) 不能同时设置')
 					this.isDate = true
@@ -123,19 +101,16 @@
 					this.dates = new Date(this.today * 1)
 					this.isDate = true
 				}
-
+				
 				if (this.betweenDate === '') {
 					//默认结束日期为180天后
 					this.betweenDate = new Date(this.today * 1 + 180 * 24 * 3600 * 1000)
 				}
-
+				
 				this.year = new Date().getFullYear();
 				this.month = new Date().getMonth() + 1;
 				this.createClendar(); //创建日历数据
 
-			},
-			closeDialog() {
-				this.$emit("close");
 			},
 			//创建每个月日历数据，传入月份1号前面用null填充
 			createDayList(month, year) {
@@ -165,7 +140,7 @@
 				const endY = this.betweenDate.getFullYear(),
 					endM = this.betweenDate.getMonth() + 1,
 					interval = (endY - this.year) * 12 + endM - this.month;
-				for (let i = 0; i <= interval; i++) {
+				for (let i = 0; i < interval; i++) {
 					let month = this.month + i,
 						year = this.year,
 						_monthData = {
@@ -190,8 +165,7 @@
 					return;
 				}
 				const _date = new Date(year + '/' + month + '/' + day)
-				let className = [],
-					festival = this.festival[year + "/" + month + "/" + day];
+				let className = []
 				if (_date.getDay() === 0 || _date.getDay() === 6) { //周末或周六样式
 					className.push('weekend')
 				}
@@ -202,22 +176,22 @@
 				if (_date * 1 < this.today) { //当天之前不可选
 					className.push('disabled')
 				} else if (_date * 1 === this.dates * 1) {
-					className.push(' trip-time');
+					className.push(' clicktime');
 				}
 
-				className.push('festival')
+				
 				return className.join(' ');
 			},
+			//日期范围选择背景色
 			addClassName2(day, month, year) {
-				if (!day || this.date) {
+				if (!day) {
 					return;
 				}
 				const _date = new Date(year + '/' + month + '/' + day) * 1
 				let className = []
 				if (_date >= this.startDates * 1 && _date <= this.endDates * 1) {
-					className.push('between')
+					return 'between'
 				}
-				return className.join(' ');
 			},
 			//清除时间 时 分 秒 毫秒
 			resetTime(date) {
@@ -227,15 +201,6 @@
 				date.setMilliseconds(0);
 				return date;
 			},
-			//设置日期和假日
-			setFestival(day, month, year) {
-				const festivalStr = this.festival[year + "/" + month + "/" + day]
-				if (festivalStr) {
-					return festivalStr
-				} else {
-					return 0;
-				}
-			},
 			//设置今天，明天，后天
 			setTip(day, month, year) {
 				if (!day) {
@@ -243,7 +208,7 @@
 				}
 				const _date = new Date(year + '/' + month + '/' + day) * 1
 				let tip;
-
+				
 				if (_date == this.today) {
 					tip = '今天'
 				} else if (_date - this.today === 24 * 3600 * 1000) {
@@ -253,12 +218,26 @@
 				}
 				if (!this.date && (this.startDate || this.endDate)) {
 					if (_date === this.startDates * 1) {
-						tip = '入住'
+						if(this.mode==2){
+							if(this.endDates*1==0){
+								tip='去/返'
+							}else{
+								tip = '去程'
+							}	
+						}else{
+							tip = '入住'
+						}	
+						
 					} else if (_date === this.endDates * 1) {
-						tip = '离开'
+						if(this.mode==2){
+							tip = '返程'
+						}else{
+							tip = '离开'
+						}	
+						
 					}
 				}
-
+				
 				return tip;
 			},
 			isCurrent(day, month, year) {
@@ -282,19 +261,21 @@
 					w: weekList[date.getDay()]
 				}
 			},
-			chooseDate(e, day, month, year) {
+			chooseDate(day, month, year) {
 				if (!day) {
 					return;
 				}
+				
 				const _date = new Date(year + '/' + month + '/' + day) * 1
-
+				
+				
 				if (_date < this.today) {
 					return;
 				}
 				if (_date == this.today || this.dates * 1) {
 					this.dates = _date
 				}
-
+	
 				if (this.startDates * 1 && this.endDates * 1 && _date > this.endDates * 1) {
 					this.startDates = _date;
 					this.endDates = "";
@@ -309,7 +290,7 @@
 				} else if (_date > this.startDates * 1) {
 					this.endDates = _date;
 				}
-
+				
 				const dateChoose = this.dateFormat(this.dates)
 				const choose = {
 					dateTime: this.dates * 1,
@@ -317,20 +298,22 @@
 					dateStr: dateChoose.y + "-" + dateChoose.m + "-" + dateChoose.d,
 					recent: ''
 				}
-
+				
 				const startDateChoose = this.dateFormat(this.startDates)
 				const endDateChoose = this.dateFormat(this.endDates)
+				const startDateStr = startDateChoose.y + "-" + startDateChoose.m + "-" + startDateChoose.d
+				const endDateStr = endDateChoose.y + "-" + endDateChoose.m + "-" + endDateChoose.d
 				const choose2 = {
 					startDateTime: this.startDates,
 					endDateTime: this.endDates,
 					startDate: startDateChoose,
 					endDate: endDateChoose,
-					startDateStr: startDateChoose.y + "-" + startDateChoose.m + "-" + startDateChoose.d,
-					endDateStr: endDateChoose.y + "-" + endDateChoose.m + "-" + endDateChoose.d,
+					startDateStr: startDateStr,
+					endDateStr: endDateStr,
 					startRecent: '',
 					endRecent: ''
 				}
-
+				
 				if (this.isDate) { //普通模式的recent
 					if (_date == this.today) {
 						choose.recent = '今天'
@@ -339,7 +322,7 @@
 					} else if (_date - this.today == 2 * 24 * 3600 * 1000) {
 						choose.recent = '后天'
 					}
-				} else { //酒店模式的recent
+				} else { //酒店和往返模式的recent
 					if (this.startDates == this.today) {
 						choose2.startRecent = '今天'
 					} else if (this.startDates - this.today == 24 * 3600 * 1000) {
@@ -347,7 +330,7 @@
 					} else if (this.startDates - this.today == 2 * 24 * 3600 * 1000) {
 						choose2.startRecent = '后天'
 					}
-
+				
 					if (this.endDates == this.today) {
 						choose2.endRecent = '今天'
 					} else if (this.endDates - this.today == 24 * 3600 * 1000) {
@@ -356,14 +339,25 @@
 						choose2.endRecent = '后天'
 					}
 				}
-
 				if (this.isDate) { //普通日期选择模式
 					this.$emit("callback", choose)
-				} else { //酒店入住模式
+				} else { 
 					choose2.countDays = (this.endDates * 1 - this.startDates * 1) / 86400 / 1000;
-					if (this.startDates && this.endDates) {
-						this.$emit("callback", choose2)
-					}
+					if(this.mode==2){//往返模式
+						if (this.startDates&&!this.endDates) {//单日往返
+							choose2.endDate = choose2.startDate
+							choose2.endDateStr = choose2.startDateStr
+							choose2.endDateTime = choose2.startDateTime
+							choose2.endRecent = choose2.startRecent
+							this.$emit("callback", choose2)
+						}else if(this.startDates){//去程-返程
+							this.$emit("callback", choose2)
+						}
+					}else{//酒店模式
+						if (this.startDates && this.endDates) {
+							this.$emit("callback", choose2)
+						}
+					}	
 				}
 			}
 		}
@@ -374,14 +368,7 @@
 	@color: #415FFB;
 	@background: rgba(80, 200, 180, 0.1);
 
-	div,
-	ul,
-	li,
-	p,
-	span,
-	i,
-	b,
-	a {
+	div,ul,li,p,span,i,b,a {
 		margin: 0;
 		padding: 0;
 	}
@@ -390,41 +377,25 @@
 		width: 100%;
 		height: 100%;
 		background: #fff;
-		position: fixed;
+		position: relative;
 		z-index: 9;
 
 		&:-webkit-scrollbar {
 			display: none
 		}
-
-		.closeDialog {
-			position: fixed;
-			bottom: 0;
-			z-index: 9;
-			background: #fff;
-			height: 90px;
-			line-height: 90px;
-			width: 100%;
-			text-align: center;
-			background: rgba(255, 255, 255, 0.9);
-		}
-
 		.ti {
-			color: #333;
 			font-size: 16px;
+			padding-top:44px;
 		}
-
 		.calendar-header {
 			position: fixed;
 			width: 100%;
 			left: 0;
 			z-index: 9;
 			box-shadow: 0 2px 15px rgba(100, 100, 100, 0.1);
-
 			.week-number {
 				background: #fff;
 				width: 100%;
-
 				span {
 					display: inline-block;
 					text-align: center;
@@ -444,7 +415,6 @@
 		.calendar-wrapper {
 			color: #333;
 			padding-top: 10px;
-
 			.calendar-title {
 				width: 100%;
 				color: #333;
@@ -483,44 +453,32 @@
 						height: 28px;
 						width: 28px;
 						line-height: 28px;
+						&.weekend {
+							color: @color;
+						}
+						&.today {
+							background: #E7E7E7;
+							border-radius: 4px;
+						}
+						&.clicktime {
+							background: @color;
+							color: #fff;
+							border-radius: 4px;
+						}
+						&.disabled {
+							color: #ccc;
+						}
 					}
-
-					.disabled {
-						color: #ccc !important;
-					}
-
-					.today {
-						background: #E7E7E7;
-						border-radius: 4px;
-					}
-
-					.trip-time {
-						background: @color;
-						color: #fff !important;
-						border-radius: 4px;
-					}
-
-					.weekend {
-						color: @color;
-					}
-
-					.jia,
+					
 					.recent {
 						position: absolute;
 						line-height: 12px;
 						color: @color;
-					}
-
-					.recent {
 						font-size: 10px;
 						width: 100%;
 						text-align: center;
 						bottom: 4px;
 						left: 0;
-					}
-
-					.festival {
-						font-size: 14px;
 					}
 				}
 			}
