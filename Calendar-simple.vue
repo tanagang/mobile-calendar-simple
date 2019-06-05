@@ -34,6 +34,7 @@
 </template>
 
 <script>
+	let {keys,values,entries} = Object
 	export default {
 		props: {
 			date: { //选择的日期（此属性和startDate,endDate互斥）
@@ -69,11 +70,59 @@
 				isDate: false, //是否是普通日历模式
 				betweenDate: '', //显示日历的时间段
 				weekList: ['日', '一', '二', '三', '四', '五', '六'],
-				calendar: []
+				calendar: [],
+				festival: {
+					'2019':{
+						"2019/6/1": "儿童节",
+						"2019/6/7": "端午",
+						"2019/7/1": "建党节",
+						"2019/8/1": "建军节",
+						"2019/8/7": "七夕",
+						"2019/9/10": "教师节",
+						"2019/9/13": "中秋",
+						"2019/10/1": "国庆",
+						"2019/10/28": "重阳",
+						"2019/10/22": "感恩节",
+						"2019/12/24": "平安夜",
+						"2019/12/25": "圣诞",
+						"2020/1/1": "元旦"
+					},
+					'2020':{
+						"2020/1/1": "元旦",
+						"2020/1/17": "小年",
+						"2020/1/24": "除夕",
+						"2020/1/25": "春节",
+						"2020/2/8": "元宵",
+						"2020/2/14": "情人节",
+						"2020/3/8": "妇女节",
+						"2020/3/12": "植树节",
+						"2020/4/1": "愚人节",
+						"2020/4/4": "清明节",
+						"2020/5/1": "劳动节",
+						"2020/5/10": "母亲节",
+						"2020/6/1": "儿童节",
+						"2020/6/21": "父亲节",
+						"2020/6/25": "端午节",
+						"2020/7/1": "建党节",
+						"2020/8/1": "建军节",
+						"2020/8/25": "七夕",
+						"2020/9/10": "教师节",
+						"2020/10/1": "国庆中秋",
+						"2020/10/25": "重阳节",
+						"2020/11/26": "感恩节",
+						"2020/12/24": "平安夜",
+						"2020/12/25": "圣诞节",
+						"2021/1/1": "元旦"
+					}
+				}
 			}
 		},
 		mounted() {
 			this.init()
+			//查看今年是否设置节假日
+			this.festivalNew= entries(this.festival).find((item,index)=>{
+				return item[index]==this.year
+			})
 		},
 		methods: {
 			init() {
@@ -88,8 +137,6 @@
 					this.endDates = new Date(this.endDate.replace(/-/g, '/'))
 				}
 				
-				this.today = new Date(new Date().toLocaleDateString()).getTime()
-				
 				if (this.date && (this.startDate || this.endDate)) {
 					console.warn(':date属性和 (:startDate,:endDate) 不能同时设置')
 					this.isDate = true
@@ -102,6 +149,13 @@
 					this.isDate = true
 				}
 				
+				this.today = new Date(new Date().toLocaleDateString()).getTime()
+				//最后可以选择的日期范围
+				this.lastDate = this.today +  180 * 24 * 3600 * 1000
+				if (this.betweenDate === '') {
+					//默认结束日期为180天
+					this.betweenDate = new Date(this.today * 1 + 180 * 24 * 3600 * 1000)
+				}
 				if (this.betweenDate === '') {
 					//默认结束日期为180天后
 					this.betweenDate = new Date(this.today * 1 + 180 * 24 * 3600 * 1000)
@@ -173,13 +227,11 @@
 					className.push('today');
 				}
 
-				if (_date * 1 < this.today) { //当天之前不可选
+				if (_date * 1 < this.today|| _date*1 > this.lastDate) { //当天之前和180天之后不可选) { //当天之前不可选
 					className.push('disabled')
 				} else if (_date * 1 === this.dates * 1) {
 					className.push(' clicktime');
 				}
-
-				
 				return className.join(' ');
 			},
 			//日期范围选择背景色
@@ -208,6 +260,10 @@
 				}
 				const _date = new Date(year + '/' + month + '/' + day) * 1
 				let tip;
+				//设置节假日
+				if(!!this.festivalNew){// && (_date >= this.today && _date <= this.lastDate) 180范围外是否显示节假日
+					tip = this.festivalNew[1][year + "/" + month + "/" + day]
+				}
 				
 				if (_date == this.today) {
 					tip = '今天'
@@ -268,10 +324,11 @@
 				
 				const _date = new Date(year + '/' + month + '/' + day) * 1
 				
-				
-				if (_date < this.today) {
+				//超出180天范围之前和之后disable灰色的区域不可点击
+				if (_date < this.today|| _date > this.lastDate) {
 					return;
 				}
+				
 				if (_date == this.today || this.dates * 1) {
 					this.dates = _date
 				}
