@@ -1,6 +1,6 @@
 vue开发，支持日历选择，支持（范围选择）酒店入住-离开，飞机往返。同时可以自定义主题色。（并兼容uniApp小程序）  
-Calendar.vue 可以传参设置主题色（如:themeColor="'#f60'"），不依赖任何less，sass，stylus等预加载  
-Calendar-simple.vue有固定主题色，不可以动态传参设置，但是可以通过源代码修改less主题色变量进行全局修改（依赖less）
+ * Calendar.vue 可以传参设置主题色（如:themeColor="'#f60'"），不依赖任何less，sass，stylus等预加载  
+ * Calendar-simple.vue有固定主题色，不可以动态传参设置，但是可以通过源代码修改less主题色变量进行全局修改（依赖less）
   ![](https://file.40017.cn/tcyp/tz/calendar1.png)
   ![](https://file.40017.cn/tcyp/tz/calendar2.png)
   ![](https://file.40017.cn/tcyp/tz/calendar3.png)
