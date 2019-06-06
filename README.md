@@ -11,10 +11,16 @@ vue开发，支持日历选择，支持（范围选择）酒店入住-离开，�
 ```javascript
 <template>
 	<div>
-		<!--默认无solt写法-->
-		<Calendar :date="'2019-06-04'" />
+		<!--用法一-->
+		<Calendar :date="'yyyy-mm-dd'" /> 如果默认今天可简写：<Calendar />
+		<!--用法二（默认:mode="1",酒店入住模式）-->
+		<Calendar :startDate="'yyyy-mm-dd'" :endDate="'yyyy-mm-dd'" />
+		<!--用法三（:mode="2"）,往返模式-->
+		<Calendar :date="'yyyy-mm-dd'" :mode="2" />
+		<!--设置主题色-->
+		<Calendar :date="'yyyy-mm-dd'" :themeColor="#FF6600" />
 		<!--如果需要solt-->
-		<Calendar :date="'2019-06-04'">
+		<Calendar :date="'yyyy-mm-dd'">
 			<div>
 				...此处也支持slot注入（不需要可以忽略此div）
 			</div>

@@ -166,7 +166,7 @@
 				if (this.endDate) {
 					this.endDates = new Date(this.endDate.replace(/-/g, '/'))
 				}
-
+				this.today = new Date(new Date().toLocaleDateString()).getTime()
 				
 				if (this.date && (this.startDate || this.endDate)) {
 					console.warn(':date属性和 (:startDate,:endDate) 不能同时设置')
@@ -180,7 +180,6 @@
 					this.isDate = true
 				}
 
-				this.today = new Date(new Date().toLocaleDateString()).getTime()
 				//最后可以选择的日期范围
 				this.lastDate = this.today +  180 * 24 * 3600 * 1000
 				if (this.betweenDate === '') {
