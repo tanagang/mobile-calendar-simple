@@ -16,7 +16,7 @@ vue开发，支持日历选择，支持（范围选择）酒店入住-离开，�
 		<!--用法二（默认:mode="1",酒店入住模式）-->
 		<Calendar :startDate="'yyyy-mm-dd'" :endDate="'yyyy-mm-dd'" />
 		<!--用法三（:mode="2"）,往返模式-->
-		<Calendar :date="'yyyy-mm-dd'" :mode="2" />
+		<Calendar  :startDate="'yyyy-mm-dd'" :endDate="'yyyy-mm-dd'" :mode="2" />
 		<!--设置主题色-->
 		<Calendar :date="'yyyy-mm-dd'" :themeColor="#FF6600" />
 		<!--如果需要solt-->

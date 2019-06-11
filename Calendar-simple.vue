@@ -136,8 +136,8 @@
 				if (this.endDate) {
 					this.endDates = new Date(this.endDate.replace(/-/g, '/'))
 				}
-				
 				this.today = new Date(new Date().toLocaleDateString()).getTime()
+				
 				if (this.date && (this.startDate || this.endDate)) {
 					console.warn(':date属性和 (:startDate,:endDate) 不能同时设置')
 					this.isDate = true
@@ -176,7 +176,7 @@
 					list.push(i)
 				}
 				for (let i = 0; i < _week; i++) {
-					list.unshift("")
+					list.unshift(null)
 				}
 				return list;
 			},
@@ -308,13 +308,13 @@
 				}
 			},
 			dateFormat(times) {
-				let weekList = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+				let weekList = ['日', '一', '二', '三', '四', '五', '六'];
 				let date = new Date(times);
 				return {
-					y: date.getFullYear(),
-					m: parseInt(date.getMonth() + 1) > 9 ? parseInt(date.getMonth() + 1) : '0' + parseInt(date.getMonth() + 1),
-					d: date.getDate() > 9 ? date.getDate() : '0' + date.getDate(),
-					w: weekList[date.getDay()]
+					year: date.getFullYear(),
+					month: parseInt(date.getMonth() + 1) > 9 ? parseInt(date.getMonth() + 1) : '0' + parseInt(date.getMonth() + 1),
+					day: date.getDate() > 9 ? date.getDate() : '0' + date.getDate(),
+					week: weekList[date.getDay()]
 				}
 			},
 			chooseDate(day, month, year) {
@@ -352,14 +352,14 @@
 				const choose = {
 					dateTime: this.dates * 1,
 					date: dateChoose,
-					dateStr: dateChoose.y + "-" + dateChoose.m + "-" + dateChoose.d,
+					dateStr: dateChoose.year + "-" + dateChoose.month + "-" + dateChoose.day,
 					recent: ''
 				}
 				
 				const startDateChoose = this.dateFormat(this.startDates)
 				const endDateChoose = this.dateFormat(this.endDates)
-				const startDateStr = startDateChoose.y + "-" + startDateChoose.m + "-" + startDateChoose.d
-				const endDateStr = endDateChoose.y + "-" + endDateChoose.m + "-" + endDateChoose.d
+				const startDateStr = startDateChoose.year + "-" + startDateChoose.month + "-" + startDateChoose.day
+				const endDateStr = endDateChoose.year + "-" + endDateChoose.month + "-" + endDateChoose.day
 				const choose2 = {
 					startDateTime: this.startDates,
 					endDateTime: this.endDates,
@@ -428,6 +428,7 @@
 	div,ul,li,p,span,i,b,a {
 		margin: 0;
 		padding: 0;
+		font-size:14px;
 	}
 
 	.calendar {
@@ -524,9 +525,11 @@
 						}
 						&.disabled {
 							color: #ccc;
+							~.recent{
+								color:#ccc;
+							}
 						}
 					}
-					
 					.recent {
 						position: absolute;
 						line-height: 12px;

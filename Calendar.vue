@@ -19,7 +19,7 @@
 						<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:getThemeColor}"></span>
 					</li>
 				</ul>
-				<!--如果酒店入住离开选择-->
+				<!--如果酒店/往返模式-->
 				<ul class="each-month" v-else>
 					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :style="{background:addClassName2(day, item.month, item.year)}"
 					 @click="chooseDate($event,day, item.month, item.year)">
@@ -166,8 +166,8 @@
 				if (this.endDate) {
 					this.endDates = new Date(this.endDate.replace(/-/g, '/'))
 				}
+
 				this.today = new Date(new Date().toLocaleDateString()).getTime()
-				
 				if (this.date && (this.startDate || this.endDate)) {
 					console.warn(':date属性和 (:startDate,:endDate) 不能同时设置')
 					this.isDate = true
@@ -180,6 +180,7 @@
 					this.isDate = true
 				}
 
+				
 				//最后可以选择的日期范围
 				this.lastDate = this.today +  180 * 24 * 3600 * 1000
 				if (this.betweenDate === '') {
@@ -202,7 +203,7 @@
 					list.push(i)
 				}
 				for (let i = 0; i < _week; i++) {
-					list.unshift("")
+					list.unshift(null)
 				}
 				return list;
 			},
@@ -346,13 +347,13 @@
 				}
 			},
 			dateFormat(times) {
-				let weekList = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+				let weekList = ['日', '一', '二', '三', '四', '五', '六'];
 				let date = new Date(times);
 				return {
-					y: date.getFullYear(),
-					m: parseInt(date.getMonth() + 1) > 9 ? parseInt(date.getMonth() + 1) : '0' + parseInt(date.getMonth() + 1),
-					d: date.getDate() > 9 ? date.getDate() : '0' + date.getDate(),
-					w: weekList[date.getDay()]
+					year: date.getFullYear(),
+					month: parseInt(date.getMonth() + 1) > 9 ? parseInt(date.getMonth() + 1) : '0' + parseInt(date.getMonth() + 1),
+					day: date.getDate() > 9 ? date.getDate() : '0' + date.getDate(),
+					week: weekList[date.getDay()]
 				}
 			},
 			chooseDate(e, day, month, year) {
@@ -387,14 +388,14 @@
 				const choose = {
 					dateTime: this.dates * 1,
 					date: dateChoose,
-					dateStr: dateChoose.y + "-" + dateChoose.m + "-" + dateChoose.d,
+					dateStr: dateChoose.year + "-" + dateChoose.month + "-" + dateChoose.day,
 					recent: ''
 				}
 
 				const startDateChoose = this.dateFormat(this.startDates)
 				const endDateChoose = this.dateFormat(this.endDates)
-				const startDateStr = startDateChoose.y + "-" + startDateChoose.m + "-" + startDateChoose.d
-				const endDateStr = endDateChoose.y + "-" + endDateChoose.m + "-" + endDateChoose.d
+				const startDateStr = startDateChoose.year + "-" + startDateChoose.month + "-" + startDateChoose.day
+				const endDateStr = endDateChoose.year + "-" + endDateChoose.month + "-" + endDateChoose.day
 				const choose2 = {
 					startDateTime: this.startDates,
 					endDateTime: this.endDates,
@@ -588,7 +589,9 @@
 	.calendar-tz  div.disabled {
 		color: #ccc!important;
 	}
-	
+	.calendar-tz  div.disabled ~.recent{
+		color: #ccc!important;
+	}
 	.calendar-tz .recent {
 		position: absolute;
 		line-height: 12px;
