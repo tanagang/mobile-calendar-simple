@@ -7,7 +7,7 @@ vue开发，支持日历选择，支持（范围选择）酒店入住-离开，�
 
 
 ### 使用方法
-首先项目中安装：npm install mobile-calendar-simple -S
+首先项目中安装：npm install mobile-calendar-simple -S （若使用HBuilderX导入的uniApp项目，可以忽略此步骤）
 ```javascript
 <template>
 	<div>
