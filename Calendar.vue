@@ -1,5 +1,6 @@
 <template>
 	<div class="calendar-tz">
+		<slot name="top"></slot>
 		<div class="calendar-header">
 			<div class="week-number">
 				<span v-for="(item,index) in weekList" :key="item">

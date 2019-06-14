@@ -1,5 +1,6 @@
 <template>
 	<div class="calendar">
+		<slot name="top"></slot>
 		<div class="calendar-header">
 			<div class="week-number">
 				<span v-for="item in weekList" v-text="item" :key="item"></span>
