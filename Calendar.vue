@@ -15,7 +15,7 @@
 				<ul class="each-month" v-if="date||(!date&&!startDate&&!endDate)">
 					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" @click="chooseDate($event,day, item.month, item.year)">
 						<div :class="[addClassName(day, item.month, item.year)]" :style="{background:getBackground(day, item.month, item.year),color:getWeekColor(day, item.month, item.year)}">
-							{{ day}}
+							{{!!day?day:''}}
 						</div>
 						<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:getThemeColor}"></span>
 					</li>
@@ -26,7 +26,7 @@
 					 @click="chooseDate($event,day, item.month, item.year)">
 						<div :class="[addClassName(day, item.month, item.year),{'clicktime': isCurrent(day, item.month, item.year)}]"
 						 :style="{background:isCurrent(day, item.month, item.year)?getThemeColor:'',color:getWeekColor(day, item.month, item.year)}">
-							{{ day}}
+							{{!!day?day:''}}
 						</div>
 						<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:getThemeColor}"></span>
 					</li>
@@ -366,6 +366,7 @@
 				if (_date < this.today|| _date > this.lastDate) {
 					return;
 				}
+	
 				if (_date == this.today || this.dates * 1) {
 					this.dates = _date
 				}

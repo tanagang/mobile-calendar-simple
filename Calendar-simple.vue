@@ -13,7 +13,7 @@
 				<ul class="each-month" v-if="date||(!date&&!startDate&&!endDate)">
 					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" @click="chooseDate(day, item.month, item.year)">
 						<div :class="[addClassName(day, item.month, item.year)]">
-							{{day}}
+							{{!!day?day:''}}
 						</div>
 						<span class="recent">{{setTip(day, item.month, item.year)}}</span>
 					</li>
@@ -23,7 +23,7 @@
 					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx"  :class="[addClassName2(day, item.month, item.year)]"
 					 @click="chooseDate(day, item.month, item.year)">
 						<div :class="[addClassName(day, item.month, item.year),{'clicktime': isCurrent(day, item.month, item.year)}]">
-							{{ day}}
+							{{!!day?day:''}}
 						</div>
 						<span class="recent" v-text="setTip(day, item.month, item.year)"></span>
 					</li>
