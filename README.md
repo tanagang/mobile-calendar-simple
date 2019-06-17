@@ -41,7 +41,8 @@ vue开发，支持日历选择，支持（范围选择）酒店入住-离开，�
   *  :startDate：酒店\往返模式的入住日期
   *  :endDate：酒店\往返模式的离开日期
   *  :themeColor：日历的主题色，例:themeColor="#FF6600"(默认#415FFB)  
-	 :mode：模式选择（默认1），1酒店模式，2往返模式
+  *  :mode：模式选择（默认1），1酒店模式，2往返模式
+  *  :preDisabled:默认（false），当设置为true时，所有小于初始日期（date和startDate）都disabled置灰
 ```diff
 
 - 注意：date（日历模式）与startDate、endDate（酒店\往返日历模式）不能共存

@@ -62,6 +62,12 @@
 					return '1'
 				}
 			},
+			preDisabled: { //小于初始的日期的全部disabled置灰
+				type: [String, Boolean],
+				default () {
+					return false
+				}
+			}
 		},
 		data() {
 			return {
@@ -128,11 +134,12 @@
 		methods: {
 			init() {
 				if (this.date) {
-					this.dates = new Date(this.date.replace(/-/g, '/'))
+					//disableDate用于addClassName方法preDisabled==true的时候使用
+					this.dates = this.disableDate = new Date(this.date.replace(/-/g, '/'))
 					this.isDate = true
 				}
 				if (this.startDate) {
-					this.startDates = new Date(this.startDate.replace(/-/g, '/'))
+					this.startDates = this.disableStartDate = new Date(this.startDate.replace(/-/g, '/'))
 				}
 				if (this.endDate) {
 					this.endDates = new Date(this.endDate.replace(/-/g, '/'))
@@ -144,7 +151,7 @@
 					this.isDate = true
 				}
 				if (!this.date && !this.startDate && this.endDate) {
-					this.startDates = new Date(this.today * 1)
+					this.startDates =  this.disableStartDate = new Date(this.today * 1)
 				}
 				if (!this.date && !this.startDate && !this.endDate) {
 					this.dates = new Date(this.today * 1)
@@ -232,6 +239,13 @@
 					className.push('disabled')
 				} else if (_date * 1 === this.dates * 1) {
 					className.push(' clicktime');
+				}
+				//preDisabled==true时设置小于disableDate的都disable
+				if(this.preDisabled&&this.isDate&&_date*1 < this.disableDate*1){
+					className.push('disabled')
+				}
+				if(this.preDisabled&&!this.isDate&&_date*1 < this.disableStartDate*1){
+					className.push('disabled')
 				}
 				return className.join(' ');
 			},
@@ -327,6 +341,13 @@
 				
 				//超出180天范围之前和之后disable灰色的区域不可点击
 				if (_date < this.today|| _date > this.lastDate) {
+					return;
+				}
+				//如果设置preDisabled==true，小于disableDate的日期都不能点击
+				if(this.preDisabled&&this.isDate&&_date*1 < this.disableDate*1){
+					return;
+				}
+				if(this.preDisabled&&!this.isDate&&_date*1 < this.disableStartDate*1){
 					return;
 				}
 				
