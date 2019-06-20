@@ -1,6 +1,6 @@
 {
   "name": "mobile-calendar-simple",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "vue开发，支持日历选择，支持酒店入住-离开范围选择，同时可以自定义主题色（兼容uniApp）",
   "main": "Calendar.vue",
   "scripts": {
