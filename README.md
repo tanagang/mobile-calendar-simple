@@ -50,7 +50,7 @@
   *  :mode：模式选择（默认1），1酒店模式，2往返模式
   *  :preDisabled:默认（false），当设置为true时，所有小于初始日期（date和startDate）都disabled置灰
   *  :lang(默认cn)，值包含中文版cn和英文版en
-  *  :initMounthCount 要初始多少个月份（默认6个月）
+  *  :initMonthCount 要初始多少个月份（默认6个月）
 ```diff
 
 - 注意：date（日历模式）与startDate、endDate（酒店\往返日历模式）不能共存
