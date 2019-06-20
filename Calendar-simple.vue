@@ -8,7 +8,8 @@
 		</div>
 		<div class="ti">
 			<div class="calendar-wrapper" v-for="(item,index) in calendar" :key="index">
-				<div class="calendar-title">{{item.year}} 年 {{item.month}} 月</div>
+				<div class="calendar-title" v-if="lang=='cn'">{{item.year}} 年 {{item.month}} 月</div>
+				<div class="calendar-title" v-else>{{monthEn[item.month-1]}} {{item.year}}</div>
 				<!--如果普通日期选择-->
 				<ul class="each-month" v-if="date||(!date&&!startDate&&!endDate)">
 					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" @click="chooseDate(day, item.month, item.year)">
@@ -67,6 +68,12 @@
 				default () {
 					return false
 				}
+			},
+			lang: { 
+				type: [String],
+				default () {
+					return "cn"
+				}
 			}
 		},
 		data() {
@@ -77,6 +84,7 @@
 				isDate: false, //是否是普通日历模式
 				betweenDate: '', //显示日历的时间段
 				weekList: ['日', '一', '二', '三', '四', '五', '六'],
+				monthEn:['January','February','March','April','May','June','July','August','September','October','November'],
 				calendar: [],
 				festival: {
 					'2019':{
@@ -161,12 +169,14 @@
 				//最后可以选择的日期范围
 				this.lastDate = this.today +  180 * 24 * 3600 * 1000
 				if (this.betweenDate === '') {
-					//默认结束日期为180天
-					this.betweenDate = new Date(this.today * 1 + 180 * 24 * 3600 * 1000)
-				}
-				if (this.betweenDate === '') {
-					//默认结束日期为180天后
-					this.betweenDate = new Date(this.today * 1 + 180 * 24 * 3600 * 1000)
+					if(this.isDate){
+						this.betweenDate = new Date(this.dates * 1 + 180 * 24 * 3600 * 1000)
+					}else if(!this.isDate){
+						this.betweenDate = new Date(this.startDates * 1 + 180 * 24 * 3600 * 1000)
+					}else{
+						//默认结束日期为180天
+						this.betweenDate = new Date(this.today * 1 + 180 * 24 * 3600 * 1000)
+					}
 				}
 				
 				this.year = new Date().getFullYear();
@@ -273,39 +283,43 @@
 				if (!day) {
 					return;
 				}
-				const _date = new Date(year + '/' + month + '/' + day) * 1
+				const td = year + '/' + month + '/' + day
+				const _date = new Date(td) * 1
+				const lang = this.lang
+				
 				let tip;
+				
 				//设置节假日
-				if(!!this.festivalNew){// && (_date >= this.today && _date <= this.lastDate) 180范围外是否显示节假日
+				if(!!this.festivalNew&&lang=="cn"){// && (_date >= this.today && _date <= this.lastDate) 180范围外是否显示节假日
 					tip = this.festivalNew[1][year + "/" + month + "/" + day]
 				}
 				
 				if (_date == this.today) {
-					tip = '今天'
+					tip = lang =='cn' ? '今天' : 'Today'
 				} else if (_date - this.today === 24 * 3600 * 1000) {
-					tip = '明天'
+					tip = lang =='cn' ? '明天' : 'TMR'
 				} else if (_date - this.today === 2 * 24 * 3600 * 1000) {
-					tip = '后天'
+					tip = lang =='cn' ? '后天' :''
 				}
+				
 				if (!this.date && (this.startDate || this.endDate)) {
 					if (_date === this.startDates * 1) {
 						if(this.mode==2){
 							if(this.endDates*1==0){
-								tip='去/返'
+								tip = lang =='cn' ? '去/返' : 'Go/Back'
 							}else{
-								tip = '去程'
+								tip = lang =='cn' ? '去程' : 'Go'
 							}	
 						}else{
-							tip = '入住'
+							tip = lang =='cn' ? '入住' : 'Into'
 						}	
 						
 					} else if (_date === this.endDates * 1) {
 						if(this.mode==2){
-							tip = '返程'
+							tip = lang =='cn' ? '返程' :  'Back'
 						}else{
-							tip = '离开'
-						}	
-						
+							tip = lang =='cn' ? '离开' : 'Leave'
+						}
 					}
 				}
 				
