@@ -1,4 +1,4 @@
-vue开发，支持日历选择，支持（范围选择）酒店入住-离开，飞机往返。同时可以自定义主题色。（并兼容uniApp小程序）  
+一款结合携程、同程艺龙开发的日历(支持日期选择模式，酒店模式，往返模式)，可自定义主题色，支持英文版  
  * Calendar.vue 可以传参设置主题色（如:themeColor="'#f60'"），不依赖任何less，sass，stylus等预加载  
  * Calendar-simple.vue有固定主题色，不可以动态传参设置，但是可以通过源代码修改less主题色变量进行全局修改（依赖less）
   ![](https://file.40017.cn/tcyp/tz/calendar1.png)
@@ -12,15 +12,15 @@ vue开发，支持日历选择，支持（范围选择）酒店入住-离开，�
 <template>
 	<div>
 		<!--用法一-->
-		<Calendar :date="'yyyy-mm-dd'" /> 如果默认今天可简写：<Calendar />
+		<Calendar :date="'yyyy-mm-dd'" @callback="getDate"/> 如果默认今天可简写：<Calendar  @callback="getDate" />
 		<!--用法二（默认:mode="1",酒店入住模式）-->
-		<Calendar :startDate="'yyyy-mm-dd'" :endDate="'yyyy-mm-dd'" />
+		<Calendar :startDate="'yyyy-mm-dd'" :endDate="'yyyy-mm-dd'"  @callback="getDate" />
 		<!--用法三（:mode="2"）,往返模式-->
-		<Calendar  :startDate="'yyyy-mm-dd'" :endDate="'yyyy-mm-dd'" :mode="2" />
+		<Calendar  :startDate="'yyyy-mm-dd'" :endDate="'yyyy-mm-dd'" :mode="2"  @callback="getDate" />
 		<!--设置主题色-->
-		<Calendar :date="'yyyy-mm-dd'" :themeColor="#FF6600" />
+		<Calendar :date="'yyyy-mm-dd'" :themeColor="#FF6600"  @callback="getDate" />
 		<!--如果需要solt-->
-		<Calendar :date="'yyyy-mm-dd'">
+		<Calendar :date="'yyyy-mm-dd'"  @callback="getDate">
 			<div>
 				...此处也支持slot注入（不需要可以忽略此div）
 			</div>
@@ -32,6 +32,12 @@ vue开发，支持日历选择，支持（范围选择）酒店入住-离开，�
 	export default {
 		components:{
 			Calendar
+		},
+		methods:{
+			//获取选择的日期回调数据
+			getDate(date){
+				console.log(date)
+			}
 		}
 	}
 </script>
@@ -43,6 +49,8 @@ vue开发，支持日历选择，支持（范围选择）酒店入住-离开，�
   *  :themeColor：日历的主题色，例:themeColor="#FF6600"(默认#415FFB)  
   *  :mode：模式选择（默认1），1酒店模式，2往返模式
   *  :preDisabled:默认（false），当设置为true时，所有小于初始日期（date和startDate）都disabled置灰
+  *  :lang(默认cn)，值包含中文版cn和英文版en
+  *  :initMounthCount 要初始多少个月份（默认6个月）
 ```diff
 
 - 注意：date（日历模式）与startDate、endDate（酒店\往返日历模式）不能共存
