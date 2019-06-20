@@ -57,6 +57,12 @@
 					return ''
 				}
 			},
+			initMonthCount: { //初始化月的个数
+				type: [String, Number],
+				default () {
+					return '6'
+				}
+			},
 			mode: { //模式（默认1），1酒店，2飞机往返 
 				type: [String, Number],
 				default () {
@@ -167,17 +173,7 @@
 				}
 				
 				//最后可以选择的日期范围
-				this.lastDate = this.today +  180 * 24 * 3600 * 1000
-				if (this.betweenDate === '') {
-					if(this.isDate){
-						this.betweenDate = new Date(this.dates * 1 + 180 * 24 * 3600 * 1000)
-					}else if(!this.isDate){
-						this.betweenDate = new Date(this.startDates * 1 + 180 * 24 * 3600 * 1000)
-					}else{
-						//默认结束日期为180天
-						this.betweenDate = new Date(this.today * 1 + 180 * 24 * 3600 * 1000)
-					}
-				}
+				this.lastDate = this.today +  this.initMonthCount * 30 * 24 * 3600 * 1000
 				
 				this.year = new Date().getFullYear();
 				this.month = new Date().getMonth() + 1;
@@ -209,10 +205,10 @@
 			},
 			//根据当天和结束日期创建日历数据
 			createClendar() {
-				const endY = this.betweenDate.getFullYear(),
-					endM = this.betweenDate.getMonth() + 1,
-					interval = (endY - this.year) * 12 + endM - this.month;
-				for (let i = 0; i < interval; i++) {
+				// const endY = this.betweenDate.getFullYear(),
+				// 	endM = this.betweenDate.getMonth() + 1,
+				// 	interval = (endY - this.year) * 12 + endM - this.month;
+				for (let i = 0; i < this.initMonthCount; i++) {
 					let month = this.month + i,
 						year = this.year,
 						_monthData = {
@@ -285,7 +281,7 @@
 				}
 				const td = year + '/' + month + '/' + day
 				const _date = new Date(td) * 1
-				const lang = this.lang
+				const lang = this.lang.toLocaleLowerCase()
 				
 				let tip;
 				
