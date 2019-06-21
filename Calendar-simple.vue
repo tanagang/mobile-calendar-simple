@@ -3,12 +3,12 @@
 		<slot name="top"></slot>
 		<div class="calendar-header">
 			<div class="week-number">
-				<span v-for="item in weekList" v-text="item" :key="item"></span>
+				<span v-for="item in language=='cn' ? weekList : weekListEn" v-text="item" :key="item"></span>
 			</div>
 		</div>
 		<div class="ti">
 			<div class="calendar-wrapper" v-for="(item,index) in calendar" :key="index">
-				<div class="calendar-title" v-if="lang=='cn'">{{item.year}} 年 {{item.month}} 月</div>
+				<div class="calendar-title" v-if="language=='cn'">{{item.year}} 年 {{item.month}} 月</div>
 				<div class="calendar-title" v-else>{{monthEn[item.month-1]}} {{item.year}}</div>
 				<!--如果普通日期选择-->
 				<ul class="each-month" v-if="date||(!date&&!startDate&&!endDate)">
@@ -41,46 +41,36 @@
 		props: {
 			date: { //选择的日期（此属性和startDate,endDate互斥）
 				type: [String, Object],
-				default () {
-					return ''
-				}
+				default:''
 			},
 			startDate: { //开始日期（入住酒店）
 				type: [String, Object],
-				default () {
-					return ''
-				}
+				default:''
 			},
 			endDate: { //结束日期（离开酒店）
 				type: [String, Object, Date],
-				default () {
-					return ''
-				}
+				default:''
 			},
 			initMonthCount: { //初始化月的个数
 				type: [String, Number],
-				default () {
-					return '6'
-				}
+				default:'6'
 			},
 			mode: { //模式（默认1），1酒店，2飞机往返 
 				type: [String, Number],
-				default () {
-					return '1'
-				}
+				default : '1'
 			},
 			preDisabled: { //小于初始的日期的全部disabled置灰
 				type: [String, Boolean],
-				default () {
-					return false
-				}
+				default:false
+			},
+			allAbled: { //全部日期都可选
+				type: [String, Boolean],
+				default:false
 			},
 			lang: { 
 				type: [String],
-				default () {
-					return "cn"
-				}
-			}
+				default:'cn'
+			},
 		},
 		data() {
 			return {
@@ -88,8 +78,10 @@
 				startDates: '',
 				dates: '',
 				isDate: false, //是否是普通日历模式
+				language:this.lang.toLocaleLowerCase(),
 				betweenDate: '', //显示日历的时间段
 				weekList: ['日', '一', '二', '三', '四', '五', '六'],
+				weekListEn:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
 				monthEn:['January','February','March','April','May','June','July','August','September','October','November'],
 				calendar: [],
 				festival: {
@@ -141,12 +133,23 @@
 		mounted() {
 			this.init()
 			//查看今年是否设置节假日
-			this.festivalNew= entries(this.festival).find((item,index)=>{
-				return item[index]==this.year
-			})
+			if(this.language=="cn"){
+				this.festivalNew= entries(this.festival).find((item,index)=>{
+					return item[index]==this.year
+				})
+			}
+			
 		},
 		methods: {
 			init() {
+				//初始化月的个数
+				if(this.initMonthCount < 1) {
+					this.monthCount = 1
+					console.warn("initMonthCount属性设置不能小于1")	
+				}else{
+					this.monthCount = this.initMonthCount
+				}
+				
 				if (this.date) {
 					//disableDate用于addClassName方法preDisabled==true的时候使用
 					this.dates = this.disableDate = new Date(this.date.replace(/-/g, '/'))
@@ -173,10 +176,21 @@
 				}
 				
 				//最后可以选择的日期范围
-				this.lastDate = this.today +  this.initMonthCount * 30 * 24 * 3600 * 1000
+				this.lastDate = this.today +  this.monthCount * 30 * 24 * 3600 * 1000
+		
+				if(this.date||this.startDate){
+					this.year = new Date(this.dates*1||this.startDates * 1).getFullYear();
+					this.month = new Date(this.dates*1||this.startDates * 1).getMonth() + 1;
+				}else if(this.endDate){
+					console.warn("请设置先startDate")
+					this.endDates = this.today * 1
+					this.year = new Date().getFullYear();
+					this.month = new Date().getMonth() + 1;
+				}else{
+					this.year = new Date().getFullYear();
+					this.month = new Date().getMonth() + 1;
+				}
 				
-				this.year = new Date().getFullYear();
-				this.month = new Date().getMonth() + 1;
 				this.createClendar(); //创建日历数据
 
 			},
@@ -205,10 +219,7 @@
 			},
 			//根据当天和结束日期创建日历数据
 			createClendar() {
-				// const endY = this.betweenDate.getFullYear(),
-				// 	endM = this.betweenDate.getMonth() + 1,
-				// 	interval = (endY - this.year) * 12 + endM - this.month;
-				for (let i = 0; i < this.initMonthCount; i++) {
+				for (let i = 0; i < this.monthCount; i++) {
 					let month = this.month + i,
 						year = this.year,
 						_monthData = {
@@ -241,16 +252,20 @@
 					className.push('today');
 				}
 
-				if (_date * 1 < this.today|| _date*1 > this.lastDate) { //当天之前和180天之后不可选) { //当天之前不可选
-					className.push('disabled')
-				} else if (_date * 1 === this.dates * 1) {
+				if(this.allAbled==false){
+					if (_date * 1 < this.today || _date*1 > this.lastDate) { //当天之前和180天之后不可选
+						className.push('disabled')
+					} 
+				}
+				
+				if (_date * 1 === this.dates * 1) {
 					className.push(' clicktime');
 				}
 				//preDisabled==true时设置小于disableDate的都disable
-				if(this.preDisabled&&this.isDate&&_date*1 < this.disableDate*1){
+				if((this.preDisabled||this.preDisabled=='true')&&this.isDate&&_date*1 < this.disableDate*1){
 					className.push('disabled')
 				}
-				if(this.preDisabled&&!this.isDate&&_date*1 < this.disableStartDate*1){
+				if((this.preDisabled||this.preDisabled=='true')&&!this.isDate&&_date*1 < this.disableStartDate*1){
 					className.push('disabled')
 				}
 				return className.join(' ');
@@ -281,40 +296,40 @@
 				}
 				const td = year + '/' + month + '/' + day
 				const _date = new Date(td) * 1
-				const lang = this.lang.toLocaleLowerCase()
+				const language = this.language.toLocaleLowerCase()
 				
 				let tip;
 				
 				//设置节假日
-				if(!!this.festivalNew&&lang=="cn"){// && (_date >= this.today && _date <= this.lastDate) 180范围外是否显示节假日
+				if(!!this.festivalNew&&language=="cn"){// && (_date >= this.today && _date <= this.lastDate) 180范围外是否显示节假日
 					tip = this.festivalNew[1][year + "/" + month + "/" + day]
 				}
 				
 				if (_date == this.today) {
-					tip = lang =='cn' ? '今天' : 'Today'
+					tip = language =='cn' ? '今天' : 'Today'
 				} else if (_date - this.today === 24 * 3600 * 1000) {
-					tip = lang =='cn' ? '明天' : 'TMR'
+					tip = language =='cn' ? '明天' : 'Tmr'
 				} else if (_date - this.today === 2 * 24 * 3600 * 1000) {
-					tip = lang =='cn' ? '后天' :''
+					tip = language =='cn' ? '后天' :''
 				}
 				
 				if (!this.date && (this.startDate || this.endDate)) {
 					if (_date === this.startDates * 1) {
 						if(this.mode==2){
 							if(this.endDates*1==0){
-								tip = lang =='cn' ? '去/返' : 'Go/Back'
+								tip = language =='cn' ? '去/返' : 'Go/Back'
 							}else{
-								tip = lang =='cn' ? '去程' : 'Go'
+								tip = language =='cn' ? '去程' : 'Go'
 							}	
 						}else{
-							tip = lang =='cn' ? '入住' : 'Into'
+							tip = language =='cn' ? '入住' : 'Into'
 						}	
 						
 					} else if (_date === this.endDates * 1) {
 						if(this.mode==2){
-							tip = lang =='cn' ? '返程' :  'Back'
+							tip = language =='cn' ? '返程' :  'Back'
 						}else{
-							tip = lang =='cn' ? '离开' : 'Leave'
+							tip = language =='cn' ? '离开' : 'Leave'
 						}
 					}
 				}
@@ -333,13 +348,12 @@
 				}
 			},
 			dateFormat(times) {
-				let weekList = ['日', '一', '二', '三', '四', '五', '六'];
 				let date = new Date(times);
 				return {
 					year: date.getFullYear(),
 					month: parseInt(date.getMonth() + 1) > 9 ? parseInt(date.getMonth() + 1) : '0' + parseInt(date.getMonth() + 1),
 					day: date.getDate() > 9 ? date.getDate() : '0' + date.getDate(),
-					week: weekList[date.getDay()]
+					week: this.weekList[date.getDay()]
 				}
 			},
 			chooseDate(day, month, year) {
@@ -348,19 +362,19 @@
 				}
 				
 				const _date = new Date(year + '/' + month + '/' + day) * 1
-				
-				//超出180天范围之前和之后disable灰色的区域不可点击
-				if (_date < this.today|| _date > this.lastDate) {
-					return;
+				if(!this.allAbled){
+					//超出180天范围之前和之后disable灰色的区域不可点击
+					if (_date < this.today|| _date > this.lastDate) {
+						return;
+					}
+					//如果设置preDisabled==true，小于disableDate的日期都不能点击
+					if((this.preDisabled||this.preDisabled=='true')&&this.isDate&&_date*1 < this.disableDate*1){
+						return;
+					}
+					if((this.preDisabled||this.preDisabled=='true')&&!this.isDate&&_date*1 < this.disableStartDate*1){
+						return;
+					}
 				}
-				//如果设置preDisabled==true，小于disableDate的日期都不能点击
-				if(this.preDisabled&&this.isDate&&_date*1 < this.disableDate*1){
-					return;
-				}
-				if(this.preDisabled&&!this.isDate&&_date*1 < this.disableStartDate*1){
-					return;
-				}
-				
 				if (_date == this.today || this.dates * 1) {
 					this.dates = _date
 				}
@@ -493,7 +507,7 @@
 					line-height: 40px;
 					width: 14.28%;
 					font-size: 16px;
-
+					color:#333;
 					&:first-child,
 					&:last-child {
 						color: @color;
@@ -538,6 +552,7 @@
 					}
 
 					div {
+						border-radius: 4px;
 						vertical-align: 8px;
 						display: inline-block;
 						height: 28px;
