@@ -14,22 +14,30 @@
 				<div class="calendar-title" v-else>{{monthEn[item.month-1]}} {{item.year}}</div>
 				<!--如果普通日期选择-->
 				<ul class="each-month" v-if="date||(!date&&!startDate&&!endDate)">
-					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" @click="chooseDate($event,day, item.month, item.year)">
-						<div :class="[addClassName(day, item.month, item.year)]" :style="{background:getBackground(day, item.month, item.year),color:getWeekColor(day, item.month, item.year)}">
+					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :style="{color:getWeekColor(day, item.month, item.year)}" @click="chooseDate($event,day, item.month, item.year)" :class="[addClassName(day, item.month, item.year)]">
+						<p class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:getThemeColor}"></p>
+						<div :style="{background:getBackground(day, item.month, item.year)}">
 							{{!!day?day:''}}
 						</div>
-						<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:getThemeColor}"></span>
+						<p class="price" v-if="priceList.length>0" :style="{color:themeColor}">
+							<template v-if="setPrice(day, item.month, item.year)>=0">{{priceList[setPrice(day, item.month, item.year)].price}}</template>		
+						</p>
 					</li>
 				</ul>
 				<!--如果酒店/往返模式-->
 				<ul class="each-month" v-else>
-					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :style="{background:addClassName2(day, item.month, item.year)}"
+					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" 
+					:style="{background:addClassName2(day, item.month, item.year),color:getWeekColor(day, item.month, item.year)}"
+					:class="[addClassName(day, item.month, item.year),{'clicktime': isCurrent(day, item.month, item.year)}]"
 					 @click="chooseDate($event,day, item.month, item.year)">
-						<div :class="[addClassName(day, item.month, item.year),{'clicktime': isCurrent(day, item.month, item.year)}]"
-						 :style="{background:isCurrent(day, item.month, item.year)?getThemeColor:'',color:getWeekColor(day, item.month, item.year)}">
+						<p class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:getThemeColor}"></p>
+						<div 
+						 :style="{background:isCurrent(day, item.month, item.year)?getThemeColor:''}">
 							{{!!day?day:''}}
 						</div>
-						<span class="recent" v-text="setTip(day, item.month, item.year)" :style="{color:getThemeColor}"></span>
+						<p class="price" v-if="priceList.length>0"  :style="{color:themeColor}">
+							<template v-if="setPrice(day, item.month, item.year)>=0">{{priceList[setPrice(day, item.month, item.year)].price}}</template>		
+						</p>
 					</li>
 				</ul>
 			</div>
@@ -54,6 +62,18 @@
 			endDate: { //结束日期
 				type: [String, Object, Date],
 				default:''
+			},
+			priceList: { //初始化月的个数
+				type: [Array, Object],
+				default:function(){
+					return []
+				}
+			},
+			notDateList: { //设定不允许点击的日期
+				type: [Array, Object],
+				default:function(){
+					return []
+				}
 			},
 			initMonthCount: { //初始化月的个数
 				type: [String, Number],
@@ -87,6 +107,7 @@
 				monthCount:'',
 				dates: '',
 				isDate: false,
+				selectPrice:[],//保存选择的日期所在的价格
 				language:this.lang.toLocaleLowerCase(),
 				weekList: ['日', '一', '二', '三', '四', '五', '六'],
 				weekListEn:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
@@ -298,8 +319,17 @@
 				}
 				if(!this.allAbled||this.allAbled=='false'){
 					if (_date * 1 < this.today || _date*1 > this.lastDate) { //当天之前和180天之后不可选
-						className.push('disabled')
+						className.push(' disabled')
 					} 
+				}
+				//设置不允许操作的日期
+				if(this.notDateList.length>0){
+					var notTemp = this.notDateList.map(item=>{
+						return new Date(item) * 1
+					})
+					if((notTemp).includes(new Date(_date)*1)){
+						className.push(' disabled')
+					}
 				}
 				
 				if (_date * 1 === this.dates * 1) {
@@ -379,6 +409,23 @@
 
 				return tip;
 			},
+			setPrice(day, month, year){
+				if (!day) {
+					return;
+				}
+				const td = year + '/' + month + '/' + day
+				const _date = new Date(td) * 1
+				var tip = 0
+				if(this.priceList.length>0){
+					tip = this.priceList.findIndex((item,index)=>{
+						const priceDate = new Date(item.date) * 1
+						return priceDate == _date
+					})
+				}
+				if(tip>=0){
+					return tip
+				}
+			},
 			isCurrent(day, month, year) {
 				if (!day) {
 					return false;
@@ -403,6 +450,7 @@
 				if (!day) {
 					return;
 				}
+				
 				const _date = new Date(year + '/' + month + '/' + day) * 1
 				if(!this.allAbled||this.allAbled=='false'){
 					//超出180天范围之前和之后disable灰色的区域不可点击
@@ -418,11 +466,20 @@
 					}
 				}
 				
+				//设置不允许操作的日期
+				if(this.notDateList.length>0){
+					var notTemp = this.notDateList.map(item=>{
+						return new Date(item) * 1
+					})
+					if(notTemp.includes(_date)){
+						return;
+					}
+				}
 				
 				if (_date == this.today || this.dates * 1) {
 					this.dates = _date
 				}
-
+					
 				if (this.startDates * 1 && this.endDates * 1 && _date > this.endDates * 1) {
 					this.startDates = _date;
 					this.endDates = "";
@@ -437,7 +494,7 @@
 				} else if (_date > this.startDates * 1) {
 					this.endDates = _date;
 				}
-
+				
 				const dateChoose = this.dateFormat(this.dates)
 				const choose = {
 					dateTime: this.dates * 1,
@@ -445,7 +502,7 @@
 					dateStr: dateChoose.year + "-" + dateChoose.month + "-" + dateChoose.day,
 					recent: ''
 				}
-
+				
 				const startDateChoose = this.dateFormat(this.startDates)
 				const endDateChoose = this.dateFormat(this.endDates)
 				const startDateStr = startDateChoose.year + "-" + startDateChoose.month + "-" + startDateChoose.day
@@ -460,71 +517,84 @@
 					startRecent: '',
 					endRecent: ''
 				}
-
-				if (this.isDate) { //普通模式的recent
-					if (_date == this.today) {
-						choose.recent = '今天'
-					} else if (_date - this.today == 24 * 3600 * 1000) {
-						choose.recent = '明天'
-					} else if (_date - this.today == 2 * 24 * 3600 * 1000) {
-						choose.recent = '后天'
-					}
-				} else { //酒店和往返模式的recent
-					if (this.startDates == this.today) {
-						choose2.startRecent = '今天'
-					} else if (this.startDates - this.today == 24 * 3600 * 1000) {
-						choose2.startRecent = '明天'
-					} else if (this.startDates - this.today == 2 * 24 * 3600 * 1000) {
-						choose2.startRecent = '后天'
-					}
-
-					if (this.endDates == this.today) {
-						choose2.endRecent = '今天'
-					} else if (this.endDates - this.today == 24 * 3600 * 1000) {
-						choose2.endRecent = '明天'
-					} else if (this.endDates - this.today == 2 * 24 * 3600 * 1000) {
-						choose2.endRecent = '后天'
-					}
+				
+				//返回选择的价格
+				if(this.priceList.length>0){
+					this.clickPrice = this.priceList[this.setPrice(day, month, year)] || ''
 				}
-
+				
 				if (this.isDate) { //普通日期选择模式
+					choose.price = this.clickPrice.price || ''
+					this.setRecent(_date,choose,'recent')
 					this.$emit("callback", choose)
 				} else { 
 					choose2.countDays = (this.endDates * 1 - this.startDates * 1) / 86400 / 1000;
+					if(this.priceList.length>0){
+						this.selectPrice.push(this.clickPrice)
+						if(this.selectPrice.length>2){
+							this.selectPrice.shift()
+						}
+					}
 					if(this.mode==2){//往返模式
 						if (this.startDates&&!this.endDates) {//单日往返
 							choose2.endDate = choose2.startDate
 							choose2.endDateStr = choose2.startDateStr
 							choose2.endDateTime = choose2.startDateTime
 							choose2.endRecent = choose2.startRecent
-							this.$emit("callback", choose2)
+				
+							 this.emitFuc(choose2,true)
 						}else if(this.startDates){//去程-返程
-							this.$emit("callback", choose2)
+							this.emitFuc(choose2)
 						}
 					}else{//酒店模式
 						if (this.startDates && this.endDates) {
-							this.$emit("callback", choose2)
+							this.emitFuc(choose2)
 						}
 					}	
+					
 				}
+			},
+			//返回recent
+			setRecent(_date,choose,recent){
+				if (_date == this.today) {
+					choose[recent] = '今天'
+				} else if (_date - this.today == 24 * 3600 * 1000) {
+					choose[recent] = '明天'
+				} else if (_date - this.today == 2 * 24 * 3600 * 1000) {
+					choose[recent] = '后天'
+				}
+			},
+			//
+			emitFuc(choose2,isWf=false){
+				if(this.priceList.length>0){
+					if(isWf){
+						choose2.startPrice = choose2.endPrice = this.clickPrice.price
+					}else{
+						choose2.startPrice = this.selectPrice[0].price || ''
+						choose2.endPrice = this.selectPrice[1].price || ''
+					}
+				}
+				if(isWf){
+					this.setRecent(this.startDates,choose2,'startRecent')
+					this.setRecent(this.startDates,choose2,'endRecent')
+				}else{
+					this.setRecent(this.startDates,choose2,'startRecent')
+					this.setRecent(this.endDates,choose2,'endRecent')
+				}
+				
+				this.$emit("callback", choose2)
 			}
 		}
 	}
 </script>
 
 <style scoped>
-	div,
-	ul,
-	li,
-	p,
-	span,
-	i,
-	b,
-	a {
+	div,ul,li,p,span,i,b,a {
 		margin: 0;
 		padding: 0;
+		font-size:14px;
 	}
-
+	
 	.calendar-tz {
 		width: 100%;
 		height: 100%;
@@ -532,58 +602,40 @@
 		position: relative;
 		z-index: 9;
 	}
-
-	.calendar-tz::-webkit-scrollbar {
-		display: none;
+	.calendar-tz:-webkit-scrollbar {
+		display: none
 	}
-
-	.calendar-tz .closeDialog {
-		position: fixed;
-		bottom: 50px;
-		z-index: 999;
-		height: 50px;
-		line-height: 90px;
-		width: 100%;
-		text-align: center;
-		background: rgba(255, 255, 255, 0.9);
-	}
-
 	.calendar-tz .ti {
-		color: #333;
 		font-size: 16px;
 		padding-top:44px;
 	}
-
-	.calendar-tz .calendar-header {
+	
+	.calendar-header {
 		position: fixed;
 		width: 100%;
 		left: 0;
 		z-index: 9;
 		box-shadow: 0 2px 15px rgba(100, 100, 100, 0.1);
 	}
-
-	.calendar-tz .week-number {
+	.calendar-header .week-number {
 		background: #fff;
 		width: 100%;
 	}
-
-	.calendar-tz .week-number span {
+	.calendar-header .week-number span{
 		display: inline-block;
 		text-align: center;
 		height: 40px;
 		line-height: 40px;
 		width: 14.28%;
-		color: #333;
 		font-size: 16px;
+		color:#333;
 	}
-
-	.calendar-tz .calendar-wrapper {
-		color: #333;
-		padding-top: 10px;
+	
+	.calendar-wrapper {
+			color: #333;
+			padding-top: 10px;
 	}
-
-	.calendar-tz .calendar-title {
-		padding-bottom: 10px;
+	.calendar-wrapper .calendar-title {
 		width: 100%;
 		color: #333;
 		text-align: center;
@@ -592,8 +644,7 @@
 		line-height: 40px;
 		height: 40px;
 	}
-
-	.calendar-tz .each-month {
+	.calendar-wrapper .each-month{
 		display: inline-block;
 		width: 98%;
 		margin-left: 1%;
@@ -601,59 +652,53 @@
 		font-size: 0;
 		border-bottom: 1px solid #F4F4F4;
 	}
-
-	.calendar-tz .each-day {
+	.calendar-wrapper .each-month .each-day {
 		position: relative;
 		display: inline-block;
 		text-align: center;
-		vertical-align: middle;
+		vertical-align: bottom;
+		padding:5px 0;
 		width: 14.28%;
 		font-size: 16px;
-		height: 50px;
-		line-height: 50px;
+		min-height: 50px;
 	}
-
-	.calendar-tz .each-day div {
+	.calendar-wrapper .each-month .each-day div{
+		border-radius: 4px;
 		vertical-align: 8px;
 		display: inline-block;
-		color:#666;
 		height: 28px;
 		width: 28px;
 		line-height: 28px;
-		border-radius: 4px;
 	}
-	.calendar-tz .each-day.between {
-		background: rgba(80, 200, 180, 0.1);
-	}
-	.calendar-tz div.weekend {
+	.calendar-wrapper .each-month .each-day .recent{
+		font-size: 10px;
 		color: #415FFB;
-	}
-	.calendar-tz div.today {
-		background: #E7E7E7;
-
-	}
-	.calendar-tz  div.clicktime {
-		background: #415FFB;
-		color: #fff!important;
-		border-radius: 4px;
-	}
-	.calendar-tz  div.disabled {
-		color: #ccc!important;
-	}
-	.calendar-tz  div.disabled ~.recent{
-		color: #ccc!important;
-	}
-	.calendar-tz .recent {
-		position: absolute;
-		line-height: 12px;
-		color: #415FFB;
-	}
-
-	.calendar-tz .recent {
-		font-size: 12px;
-		width: 100%;
+		height:18px;
+		line-height: 18px;
 		text-align: center;
-		bottom: 4px;
-		left: 0;
+		width: 100%;
+	}	
+	.calendar-wrapper .each-month .each-day .price{
+		margin-top:-4px;
+		height: 18px;
+		line-height: 18px;
+		display: block;
+		color:#666;
+		font-size:10px;
+		text-align: center;
 	}
+	.calendar-wrapper .each-month .each-day.today div{
+		background: #E7E7E7;
+		border-radius: 4px;
+	}
+	.calendar-wrapper .each-month .each-day.disabled .recent,
+	.calendar-wrapper .each-month .each-day.disabled .price,
+	.calendar-wrapper .each-month .each-day.disabled div{
+			color:#ccc!important;
+	}
+	.calendar-wrapper .each-month .each-day.clicktime div{
+		color: #fff;
+		border-radius: 4px;
+	}
+
 </style>

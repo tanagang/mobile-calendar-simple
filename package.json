@@ -12,11 +12,16 @@
   },
   "keywords": [
     "mobile",
+		"calendar",
+		"datepicker",
     "vue日期范围选择",
     "日历",
     "日历范围",
-    "日期范围",
-    "酒店日历入住-离开范围选择"
+		"价格日历",
+		"日历价格",
+    "酒店日历",
+		"日历酒店",
+		"往返"
   ],
   "author": "tanzheng",
   "license": "ISC",

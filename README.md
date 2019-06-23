@@ -1,4 +1,4 @@
-一款结合携程、同程艺龙开发的日历(支持日期选择模式，酒店模式，往返模式)，可自定义主题色，支持英文版  
+一款结合携程、同程艺龙开发的日历(支持日期选择模式，酒店模式，往返模式,价格日历模式)，可自定义主题色，支持英文版  
  * Calendar.vue 可以传参设置主题色（如:themeColor="'#f60'"），不依赖任何less，sass，stylus等预加载  
  * Calendar-simple.vue有固定主题色，不可以动态传参设置，但是可以通过源代码修改less主题色变量进行全局修改（依赖less）
   ![](https://file.40017.cn/tcyp/tz/calendar1.png)
@@ -17,6 +17,10 @@
 		<Calendar :startDate="'yyyy-mm-dd'" :endDate="'yyyy-mm-dd'"  @callback="getDate" />
 		<!--用法三（:mode="2"）,往返模式-->
 		<Calendar  :startDate="'yyyy-mm-dd'" :endDate="'yyyy-mm-dd'" :mode="2"  @callback="getDate" />
+		<!--用法四,价格日历模式-->
+		<Calendar  :priceList="priceList"  @callback="getDate" />
+		<!--用法五,不可操作的日期-->
+		<Calendar  :notDateList="notDateList"  @callback="getDate" />
 		<!--设置主题色-->
 		<Calendar :date="'yyyy-mm-dd'" :themeColor="#FF6600"  @callback="getDate" />
 		<!--如果需要solt-->
@@ -30,14 +34,26 @@
 <script>
 	import Calendar from 'mobile-calendar-simple'
 	export default {
-		components:{
-			Calendar
+		data(){
+			return {
+				notDateList:['2019-6-25','2019-6-26'],//不可操作的日期
+				priceList:[//价格日历列表
+					{date:'2019-6-24',price:'¥199'},
+					{date:'2019-6-25',price:'¥500'},
+					{date:'2019-6-26',price:'¥199'},
+					{date:'2019-6-27',price:'¥500'},
+					{date:'2019-6-28',price:'¥500'}
+				]
+			}
 		},
 		methods:{
 			//获取选择的日期回调数据
 			getDate(date){
 				console.log(date)
 			}
+		},
+		components:{
+			Calendar
 		}
 	}
 </script>
@@ -52,6 +68,8 @@
   *  :lang(默认cn)，值包含中文版cn和英文版en
   *  :initMonthCount 要初始多少个月份（默认6个月）最小1个月
   *	 :allAbled="true"  解除日期范围外的disabled限制（比如今天之前的日期为disabled），即所有日期均都可操作
+  *	 :priceList='priceList' 添加价格日历列表
+  *	 :notDateList="notDateList" 设置不可点击的日期
 ```diff
 
 - 注意：date（日历模式）与startDate、endDate（酒店\往返日历模式）不能共存
