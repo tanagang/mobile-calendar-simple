@@ -4,6 +4,7 @@
   ![](https://file.40017.cn/tcyp/tz/calendar1.png)
   ![](https://file.40017.cn/tcyp/tz/calendar2.png)
   ![](https://file.40017.cn/tcyp/tz/calendar3.png)
+  ![](https://file.40017.cn/tcyp/tz/calendar4.png)
 
 
 ### 使用方法
