@@ -473,7 +473,9 @@
 				}
 				
 				if (this.isDate) { //普通日期选择模式
-					choose.price = this.clickPrice.price || ''
+					if(this.clickPrice){
+						choose.price = this.clickPrice.price
+					}
 					this.setRecent(_date,choose,'recent')
 					this.$emit("callback", choose)
 				} else { 
@@ -517,7 +519,7 @@
 			emitFuc(choose2,isWf=false){
 				if(this.priceList.length>0){
 					if(isWf){
-						choose2.startPrice = choose2.endPrice = this.clickPrice.price
+						choose2.startPrice = choose2.endPrice = this.clickPrice&&this.clickPrice.price
 					}else{
 						choose2.startPrice = this.selectPrice[0].price || ''
 						choose2.endPrice = this.selectPrice[1].price || ''
