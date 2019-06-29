@@ -71,6 +71,9 @@
   *	 :allAbled="true"  解除日期范围外的disabled限制（比如今天之前的日期为disabled），即所有日期均都可操作
   *	 :priceList='priceList' 添加价格日历列表
   *	 :notDateList="notDateList" 设置不可点击的日期
+  *  :switchMonth="true" 当设置此值时，可以手动切换月份（上一月，下一月）  
+  
+
 ```diff
 
 - 注意：date（日历模式）与startDate、endDate（酒店\往返日历模式）不能共存

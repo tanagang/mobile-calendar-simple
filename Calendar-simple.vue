@@ -8,8 +8,12 @@
 		</div>
 		<div class="ti">
 			<div class="calendar-wrapper" v-for="(item,index) in calendar" :key="index">
-				<div class="calendar-title" v-if="language=='cn'">{{item.year}} 年 {{item.month}} 月</div>
-				<div class="calendar-title" v-else>{{monthEn[item.month-1]}} {{item.year}}</div>
+				<div class="calendar-title flex" v-if="language=='cn'" >
+					<span v-show="switchMonth" @click="createClendar('pre')">上一月</span><div class="flex-1">{{item.year}} 年 {{item.month}} 月 </div><span  v-show="switchMonth" @click="createClendar('next')">下一月</span>
+				</div>
+				<div class="calendar-title flex" v-else>
+					<span v-show="switchMonth" @click="createClendar('pre')">Prev month</span><div class="flex-1">{{monthEn[item.month-1]}} {{item.year}} </div><span  v-show="switchMonth" @click="createClendar('next')">Next month</span>
+				</div>
 				<!--如果普通日期选择-->
 				<ul class="each-month" v-if="date||(!date&&!startDate&&!endDate)">
 					<li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" @click="chooseDate(day, item.month, item.year)" :class="[addClassName(day, item.month, item.year)]">
@@ -73,6 +77,10 @@
 				type: [String, Number],
 				default : '1'
 			},
+			switchMonth: { //是否开始切换月份模式
+				type: [String, Boolean],
+				default:false
+			},
 			preDisabled: { //小于初始的日期的全部disabled置灰
 				type: [String, Boolean],
 				default:false
@@ -91,6 +99,7 @@
 				endDates: '',
 				startDates: '',
 				dates: '',
+				currentMonthNum:0,//当前月的索引，switchMonth=true时使用
 				selectPrice:[],//保存选择的日期所在的价格
 				isDate: false, //是否是普通日历模式
 				language:this.lang.toLocaleLowerCase(),
@@ -231,23 +240,46 @@
 				return dayNum[month - 1]
 			},
 			//根据当天和结束日期创建日历数据
-			createClendar() {
+			createClendar(flag=null) {
+				if(this.switchMonth){
+					this.monthCount = 1
+					if(flag == 'next'){
+						this.currentMonthNum += 1
+					}else if(flag == 'pre'){
+						this.currentMonthNum -= 1
+					}
+				}
+				
 				for (let i = 0; i < this.monthCount; i++) {
-					let month = this.month + i,
+					
+					let month = this.month + i + this.currentMonthNum,
 						year = this.year,
 						_monthData = {
 							dayList: [],
 							month: '',
 							year: ''
 						};
-
-					if (month > 12) {
-						month = month - 12;
-						year += 1;
+					
+					var m = Math.ceil(month / 12)
+					if(m > 0){
+						year += m - 1
+					}else{
+						year += m - 1
 					}
+					if (month > 12) {
+						month = month % 12 == 0 ? 12 : month % 12;
+					}
+			
+					if(month<=0){
+						month = 12 + month % 12
+					}
+					
 					_monthData.year = year;
 					_monthData.month = month;
 					_monthData.dayList = this.createDayList(month, year);
+					if(this.switchMonth){
+						this.calendar = []
+					}
 					this.calendar.push(_monthData)
 				}
 			},
@@ -258,9 +290,9 @@
 				}
 				const _date = new Date(year + '/' + month + '/' + day)
 				let className = []
-				if (_date.getDay() === 0 || _date.getDay() === 6) { //周末或周六样式
-					className.push('weekend')
-				}
+				// if (_date.getDay() === 0 || _date.getDay() === 6) { //周末或周六样式
+				// 	className.push('weekend')
+				// }
 				if (_date * 1 === this.today) {
 					className.push('today');
 				}
@@ -406,13 +438,13 @@
 					if (_date < this.today|| _date > this.lastDate) {
 						return;
 					}
-					//如果设置preDisabled==true，小于disableDate的日期都不能点击
-					if((this.preDisabled||this.preDisabled=='true')&&this.isDate&&_date*1 < this.disableDate*1){
-						return;
-					}
-					if((this.preDisabled||this.preDisabled=='true')&&!this.isDate&&_date*1 < this.disableStartDate*1){
-						return;
-					}
+				}
+				//如果设置preDisabled==true，小于disableDate的日期都不能点击
+				if((this.preDisabled||this.preDisabled=='true')&&this.isDate&&_date*1 < this.disableDate*1){
+					return;
+				}
+				if((this.preDisabled||this.preDisabled=='true')&&!this.isDate&&_date*1 < this.disableStartDate*1){
+					return;
 				}
 				//设置不允许操作的日期
 				if(this.notDateList.length>0){
@@ -547,7 +579,17 @@
 		padding: 0;
 		font-size:14px;
 	}
-
+	.flex {
+		justify-content: space-between;
+		display: -webkit-box;
+		display: flex;
+		box-sizing: border-box;
+	 }
+	.flex-1 {
+		width: 100%;
+		-webkit-box-flex: 1;
+		flex: 1;
+	}
 	.calendar-tz {
 		width: 100%;
 		height: 100%;
@@ -588,16 +630,21 @@
 		}
 
 		.calendar-wrapper {
-			color: #333;
-			padding-top: 10px;
 			.calendar-title {
-				width: 100%;
-				color: #333;
 				text-align: center;
-				font-size: 16px;
-				font-weight: 400;
-				line-height: 40px;
-				height: 40px;
+				line-height: 50px;
+				height: 50px;
+				margin:10px 0;
+				span{
+					font-size:12px;
+					padding:0 20px;
+					color:@color;
+				}
+				 div{
+					color: #333;
+					font-size: 16px;
+					font-weight: 400;
+				}
 			}
 
 			.each-month {
@@ -613,21 +660,21 @@
 					display: inline-block;
 					text-align: center;
 					vertical-align: bottom;
-					padding:5px 0;
+					padding:2px 0;
 					width: 14.28%;
 					font-size: 16px;
-					min-height: 50px;
-
+					height: 72px;
+					color:#333;
 					div {
 						border-radius: 4px;
 						vertical-align: 8px;
 						display: inline-block;
-						height: 28px;
-						width: 28px;
-						line-height: 28px;
+						height: 32px;
+						width: 32px;
+						line-height: 32px;
 					}
 					.recent {
-						font-size: 10px;
+						font-size: 12px;
 						color: #415FFB;
 						height:18px;
 						line-height: 18px;
@@ -635,12 +682,12 @@
 						width: 100%;
 					}
 					.price{
-						margin-top:-4px;
+						margin-top:-2px;
 						height: 18px;
 						line-height: 18px;
 						display: block;
-						color:#666;
-						font-size:10px;
+						color:@color;
+						font-size:12px;
 						text-align: center;
 					}
 					&.between {
