@@ -1,6 +1,6 @@
 {
   "name": "mobile-calendar-simple",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "点击日历选择，酒店入住-离开范围选择，往返模式，价格日历设置等，同时可以自定义主题色（兼容uniApp小程序）",
   "main": "Calendar.vue",
   "scripts": {
