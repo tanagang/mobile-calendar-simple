@@ -94,6 +94,32 @@
 				default:'cn'
 			},
 		},
+		watch: {
+		  date() {
+		  	this.init()
+		  },
+		  startDate() {
+			this.init()
+		  },
+		  endDate() {
+		  	this.init()
+		  },
+		  priceList() {
+		  	this.init()
+		  },
+		  notDateList() {
+		  	this.init()
+		  },
+		  preDisabled(){ //小于初始的日期的全部disabled置灰
+		  	this.init()
+		  },
+		  allAbled(){ //全部日期都可选
+		  	this.init()
+		  },
+		  lang(){ 
+		  	this.init()
+		  },
+		},
 		data() {
 			return {
 				endDates: '',
@@ -290,9 +316,9 @@
 				}
 				const _date = new Date(year + '/' + month + '/' + day)
 				let className = []
-				// if (_date.getDay() === 0 || _date.getDay() === 6) { //周末或周六样式
-				// 	className.push('weekend')
-				// }
+				if (_date.getDay() === 0 || _date.getDay() === 6) { //周末或周六样式
+					className.push('weekend')
+				}
 				if (_date * 1 === this.today) {
 					className.push('today');
 				}

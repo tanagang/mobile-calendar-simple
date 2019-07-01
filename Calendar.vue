@@ -67,7 +67,7 @@
 				type: [String, Object, Date],
 				default:''
 			},
-			priceList: { //初始化月的个数
+			priceList: { //价格日历数组
 				type: [Array, Object],
 				default:function(){
 					return []
@@ -107,6 +107,32 @@
 				type: [String, Object, Date],
 				default:'#415FFB'
 			}
+		},
+		watch: {
+		  date() {
+		  	this.init()
+		  },
+		  startDate() {
+			this.init()
+		  },
+		  endDate() {
+		  	this.init()
+		  },
+		  priceList() {
+		  	this.init()
+		  },
+		  notDateList() {
+		  	this.init()
+		  },
+		  preDisabled(){ //小于初始的日期的全部disabled置灰
+		  	this.init()
+		  },
+		  allAbled(){ //全部日期都可选
+		  	this.init()
+		  },
+		  lang(){ 
+		  	this.init()
+		  },
 		},
 		data() {
 			return {

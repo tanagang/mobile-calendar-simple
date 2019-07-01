@@ -1,11 +1,18 @@
 一款结合携程、同程艺龙开发的日历(支持日期选择模式，酒店模式，往返模式,价格日历模式)，可自定义主题色，支持英文版  
  * Calendar.vue 可以传参设置主题色（如:themeColor="'#f60'"），不依赖任何less，sass，stylus等预加载  
- * Calendar-simple.vue有固定主题色，不可以动态传参设置，但是可以通过源代码修改less主题色变量进行全局修改（依赖less）
+ * Calendar-simple.vue（有默认主题色）不可以动态传参设置主题色，但是可以通过源代码less变量@color进行全局修改（依赖less）
   ![](https://file.40017.cn/tcyp/tz/calendar1.png)
   ![](https://file.40017.cn/tcyp/tz/calendar2.png)
   ![](https://file.40017.cn/tcyp/tz/calendar3.png)
   ![](https://file.40017.cn/tcyp/tz/calendar4.png)
 
+  
+  
+```diff
++ 为了及时响应大家的各种功能需求，可谓不遗余力
++ 所以希望能在上面github链接里点个star，也算是鼓励一下了！
++ 同时有什么新的需求和建议可以继续联系我，我及时更新...
+```
 
 ### 使用方法
 首先项目中安装：npm install mobile-calendar-simple -S （若使用HBuilderX导入的uniApp项目，可以忽略此步骤）
@@ -76,7 +83,7 @@
 
 ```diff
 
-- 注意：date（日历模式）与startDate、endDate（酒店\往返日历模式）不能共存
+- 注意：date（日历模式）与startDate、endDate（酒店\往返日历模式）尽量不要共存
 - 要么 <Calendar :date="'2019-06-04'"  :themeColor="'#415FFB'" @callback="XXX" />
 - 要么 <Calendar :startDate="'2019-06-06'" :endDate="'2019-06-08'" :themeColor="'#415FFB'"  @callback="XXX" />
 ```
