@@ -28,7 +28,7 @@
 		<!--用法四,价格日历模式-->
 		<Calendar  :priceList="priceList"  @callback="getDate" />
 		<!--用法五,不可操作的日期-->
-		<Calendar  :notDateList="notDateList"  @callback="getDate" />
+		<Calendar  :disabledList="disabledList"  @callback="getDate" />
 		<!--设置主题色-->
 		<Calendar :date="'yyyy-mm-dd'" :themeColor="#FF6600"  @callback="getDate" />
 		<!--如果需要solt-->
@@ -44,7 +44,7 @@
 	export default {
 		data(){
 			return {
-				notDateList:['2019-6-25','2019-6-26'],//不可操作的日期
+				disabledList:['2019-6-25','2019-6-26'],//不可操作的日期
 				priceList:[//价格日历列表
 					{date:'2019-6-24',price:'¥199'},
 					{date:'2019-6-25',price:'¥500'},
@@ -75,9 +75,10 @@
   *  :preDisabled:默认（false），当设置为true时，所有小于初始日期（date和startDate）都disabled置灰
   *  :lang(默认cn)，值包含中文版cn和英文版en
   *  :initMonthCount 要初始多少个月份（默认6个月）最小1个月
+  *  :initPreMonthCount 初始化date或者startDate之前几个月的日历数据
   *	 :allAbled="true"  解除日期范围外的disabled限制（比如今天之前的日期为disabled），即所有日期均都可操作
   *	 :priceList='priceList' 添加价格日历列表
-  *	 :notDateList="notDateList" 设置不可点击的日期
+  *	 :disabledList="disabledList" 设置不可点击的日期
   *  :switchMonth="true" 当设置此值时，可以手动切换月份（上一月，下一月）  
   
 

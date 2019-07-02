@@ -73,7 +73,7 @@
 					return []
 				}
 			},
-			notDateList: { //设定不允许点击的日期
+			disabledList: { //设定不允许点击的日期
 				type: [Array, Object],
 				default:function(){
 					return []
@@ -82,6 +82,10 @@
 			initMonthCount: { //初始化月的个数
 				type: [String, Number],
 				default:'6'
+			},
+			initPreMonthCount: { //初始化date或者startDate之前几个月的日历数据
+				type: [String, Number],
+				default:'0'
 			},
 			mode: { //模式（默认1），1酒店，2飞机往返 
 				type: [String, Number],
@@ -109,30 +113,36 @@
 			}
 		},
 		watch: {
-		  date() {
-		  	this.init()
-		  },
-		  startDate() {
-			this.init()
-		  },
-		  endDate() {
-		  	this.init()
-		  },
-		  priceList() {
-		  	this.init()
-		  },
-		  notDateList() {
-		  	this.init()
-		  },
-		  preDisabled(){ //小于初始的日期的全部disabled置灰
-		  	this.init()
-		  },
-		  allAbled(){ //全部日期都可选
-		  	this.init()
-		  },
-		  lang(){ 
-		  	this.init()
-		  },
+			  date() {
+				this.init()
+			  },
+			  startDate() {
+				this.init()
+			  },
+			  endDate() {
+				this.init()
+			  },
+			  priceList() {
+				this.init()
+			  },
+			  disabledList() {
+				this.init()
+			  },
+			  initMonthCount() { //初始化月的个数
+				this.init()
+			  },
+			  initPreMonthCount() { //初始化date或者startDate之前几个月的日历数据
+				this.init()
+			  },
+			  preDisabled(){ //小于初始的日期的全部disabled置灰
+				this.init()
+			  },
+			  allAbled(){ //全部日期都可选
+				this.init()
+			  },
+			  lang(){ 
+				this.init()
+			  }
 		},
 		data() {
 			return {
@@ -216,12 +226,6 @@
 		},
 		mounted() {
 			this.init()
-			//查看今年是否设置节假日
-			if(this.language=="cn"){
-				this.festivalNew= entries(this.festival).find((item,index)=>{
-					return item[index]==this.year
-				})
-			}
 		},
 		methods: {
 			init() {
@@ -276,7 +280,41 @@
 					this.month = new Date().getMonth() + 1;
 				}
 				
+				//查看今年是否设置节假日
+				if(this.language=="cn"){
+					this.festivalNew= entries(this.festival).find((item,index)=>{
+						return item[index]==this.year
+					})
+				}
+				
+				//如果初始化date或者startDate之前月份数据
+				if(parseInt(this.initPreMonthCount)>0){
+					this.initPreMonth()
+				}
+				
 				this.createClendar(); //创建日历数据
+			},
+			//初始化date或者startDate之前几个月的日历数据
+			initPreMonth(){
+				let year = this.year;
+				let month = this.month - this.initPreMonthCount
+				var m = Math.ceil(month / 12)
+				this.monthCount = parseInt(this.monthCount) + this.initPreMonthCount
+				if(m > 0){
+					year += m - 1
+				}else{
+					year += m - 1
+				}
+				if (month > 12) {
+					month = month % 12 == 0 ? 12 : month % 12;
+				}
+				
+				if(month<=0){
+					month = 12 + month % 12
+				}
+				
+				this.year = year
+				this.month = month
 			},
 			//创建每个月日历数据，传入月份1号前面用null填充
 			createDayList(month, year) {
@@ -376,8 +414,8 @@
 					} 
 				}
 				//设置不允许操作的日期
-				if(this.notDateList.length>0){
-					var notTemp = this.notDateList.map(item=>{
+				if(this.disabledList.length>0){
+					var notTemp = this.disabledList.map(item=>{
 						return new Date(item) * 1
 					})
 					if((notTemp).includes(new Date(_date)*1)){
@@ -520,8 +558,8 @@
 				}
 				
 				//设置不允许操作的日期
-				if(this.notDateList.length>0){
-					var notTemp = this.notDateList.map(item=>{
+				if(this.disabledList.length>0){
+					var notTemp = this.disabledList.map(item=>{
 						return new Date(item) * 1
 					})
 					if(notTemp.includes(_date)){
