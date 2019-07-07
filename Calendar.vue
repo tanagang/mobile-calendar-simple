@@ -8,7 +8,6 @@
 				</span>
 			</div>
 		</div>
-		
 		<div class="ti" id="ti"  :style="{paddingTop:paddindTop+'px',height:height}">
 			<div class="calendar-wrapper" v-for="(item,index) in calendar" :key="index"  v-scrolltop="{item:item,date:date||startDate}">
 				<div class="calendar-title flex" v-if="language=='cn'"  :style="{color:getThemeColor}">
@@ -88,9 +87,17 @@
 				type: [String, Number],
 				default:0
 			},
+			initPreMonthCount: { //初始化date或者startDate之前几个月的日历数据
+				type: [String, Number],
+				default:'0'
+			},
 			mode: { //模式（默认1），1酒店，2飞机往返 
 				type: [String, Number],
 				default:1
+			},
+			switchMonth: { //是否开始切换月份模式
+				type: [String, Boolean],
+				default:false
 			},
 			switchMonth: { //是否开始切换月份模式
 				type: [String, Boolean],
@@ -255,6 +262,7 @@
 			  }
 			}
 		  }
+
 		},
 		methods: {
 			init() {
@@ -329,6 +337,7 @@
 				let month = this.month - this.initPreMonthCount
 				var m = Math.ceil(month / 12)
 				this.monthCount = parseInt(this.monthCount) + parseInt(this.initPreMonthCount)
+
 				if(m > 0){
 					year += m - 1
 				}else{

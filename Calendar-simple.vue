@@ -7,7 +7,6 @@
 				<span v-for="item in language=='cn' ? weekList : weekListEn" v-text="item" :key="item"></span>
 			</div>
 		</div>
-
 		<div class="ti" id="ti" :style="{paddingTop:paddindTop+'px',height:height}">
 			<div class="calendar-wrapper" v-for="(item,index) in calendar" :key="index" v-scrolltop="{item:item,date:date||startDate}">
 				<div class="calendar-title flex" v-if="language=='cn'">
@@ -79,9 +78,17 @@
 				type: [String, Number],
 				default:0
 			},
+			initPreMonthCount: { //初始化date或者startDate之前几个月的日历数据
+				type: [String, Number],
+				default:'0'
+			},
 			mode: { //模式（默认1），1酒店，2飞机往返 
 				type: [String, Number],
 				default : 1
+			},
+			switchMonth: { //是否开始切换月份模式
+				type: [String, Boolean],
+				default:false
 			},
 			switchMonth: { //是否开始切换月份模式
 				type: [String, Boolean],
@@ -354,6 +361,28 @@
 				this.year = year
 				this.month = month
 			},
+			//初始化date或者startDate之前几个月的日历数据
+			initPreMonth(){
+				let year = this.year;
+				let month = this.month - this.initPreMonthCount
+				var m = Math.ceil(month / 12)
+				this.monthCount = parseInt(this.monthCount) + this.initPreMonthCount
+				if(m > 0){
+					year += m - 1
+				}else{
+					year += m - 1
+				}
+				if (month > 12) {
+					month = month % 12 == 0 ? 12 : month % 12;
+				}
+				
+				if(month<=0){
+					month = 12 + month % 12
+				}
+				
+				this.year = year
+				this.month = month
+			},
 			//创建每个月日历数据，传入月份1号前面用null填充
 			createDayList(month, year) {
 				const count = this.getDayNum(month, year),
@@ -377,7 +406,6 @@
 				}
 				return dayNum[month - 1]
 			},
-			//根据当天和结束日期创建日历数据
 			//添加日历样式
 			addClassName(day, month, year) {
 				if (!day) {
