@@ -30,7 +30,7 @@
 		<!--用法五,不可操作的日期-->
 		<Calendar  :disabledList="disabledList"  @callback="getDate" />
 		<!--设置主题色-->
-		<Calendar :date="'yyyy-mm-dd'" :themeColor="#FF6600"  @callback="getDate" />
+		<Calendar :date="'yyyy-mm-dd'" :themeColor="'#FF6600'"  @callback="getDate" />
 		<!--如果需要solt-->
 		<Calendar :date="'yyyy-mm-dd'"  @callback="getDate">
 			<div>
@@ -70,7 +70,7 @@
   *  :date：传入初始日期（默认当天）
   *  :startDate：酒店\往返模式的入住日期
   *  :endDate：酒店\往返模式的离开日期
-  *  :themeColor：日历的主题色，例:themeColor="#FF6600"(默认#415FFB)  
+  *  :themeColor：日历的主题色，例:themeColor="'#FF6600'"(默认#415FFB)  
   *  :mode：模式选择（默认1），1酒店模式，2往返模式
   *  :preDisabled:默认（false），当设置为true时，所有小于初始日期（date和startDate）都disabled置灰
   *  :lang(默认cn)，值包含中文版cn和英文版en
