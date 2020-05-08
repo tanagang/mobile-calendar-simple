@@ -1,6 +1,6 @@
-一款结合携程、同程艺龙开发的日历(支持日期选择模式，酒店模式，往返模式,价格日历模式)，可自定义主题色，支持英文版  
- * Calendar.vue 可以传参设置主题色（如:themeColor="'#f60'"），不依赖任何less，sass，stylus等预加载  
- * Calendar-simple.vue（有默认主题色）不可以动态传参设置主题色，但是可以通过源代码less变量@color进行全局修改（依赖less）
+ 同程艺龙-多种模式日历插件,支持标准选择模式、酒店入住离开模式、飞机往返模式，可自定义主题色
+ * Calendar.vue 可以传参设置主题色，如theme-color="#ff6600"或者"#f60"（依赖less） 
+
   ![](https://file.40017.cn/tcyp/tz/calendar1.png)
   ![](https://file.40017.cn/tcyp/tz/calendar2.png)
   ![](https://file.40017.cn/tcyp/tz/calendar3.png)
