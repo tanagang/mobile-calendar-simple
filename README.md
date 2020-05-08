@@ -14,48 +14,44 @@
 + 同时有什么新的需求和建议可以继续联系我，我及时更新...
 ```
 
+github链接
+[链接名称](https://github.com/tanagang/mobile-calendar-simple)
+
+
 ### 使用方法
-首先项目中安装：npm install mobile-calendar-simple -S （若使用HBuilderX导入的uniApp项目，可以忽略此步骤）
+若在vue-cli项目中安装：npm install mobile-calendar-simple -S （若使用uniapp的工具HBuilderX导入，可以忽略此步骤）
 ```javascript
 <template>
 	<div>
 		<!--用法一-->
-		<Calendar :date="'yyyy-mm-dd'" @callback="getDate"/> 如果默认今天可简写：<Calendar  @callback="getDate" />
-		<!--用法二（默认:mode="1",酒店入住模式）-->
-		<Calendar :startDate="'yyyy-mm-dd'" :endDate="'yyyy-mm-dd'"  @callback="getDate" />
-		<!--用法三（:mode="2"）,往返模式-->
-		<Calendar  :startDate="'yyyy-mm-dd'" :endDate="'yyyy-mm-dd'" :mode="2"  @callback="getDate" />
-		<!--用法四,价格日历模式-->
-		<Calendar  :priceList="priceList"  @callback="getDate" />
-		<!--用法五,不可操作的日期-->
-		<Calendar  :disabledList="disabledList"  @callback="getDate" />
+		<calendar @callback="getDate" /> 
+		<!--用法二（mode="2",酒店入住模式,mode="3",往返模式）start-date开始日期，end-date结束日期-->
+		<calendar :start-date="startDate" :end-date="endDate" mode="2"  @callback="getDate" />
+		<!--用法三,可以操作的日期范围-->
+		<calendar  :between-start="startDate" :between-end="endDate"  @callback="getDate" />
 		<!--设置主题色-->
-		<Calendar :date="'yyyy-mm-dd'" :themeColor="'#FF6600'"  @callback="getDate" />
+		<calendar :themeColor="'#FF6600'"  @callback="getDate" />
 		<!--如果需要solt-->
-		<Calendar :date="'yyyy-mm-dd'"  @callback="getDate">
+		<calendar @callback="getDate">
 			<div>
 				...此处也支持slot注入（不需要可以忽略此div）
 			</div>
-		</Calendar>
+		</calendar>
 	</div>
 </template>
 <script>
-	import Calendar from 'mobile-calendar-simple'
+	import Calendar from '@/components/mobile-calendar-simple/Calendar.vue'
 	export default {
 		data(){
-			return {
-				disabledList:['2019-6-25','2019-6-26'],//不可操作的日期
-				priceList:[//价格日历列表
-					{date:'2019-6-24',price:'¥199'},
-					{date:'2019-6-25',price:'¥500'},
-					{date:'2019-6-26',price:'¥199'},
-					{date:'2019-6-27',price:'¥500'},
-					{date:'2019-6-28',price:'¥500'}
-				]
+			return {//日期均为yyyy-mm-dd或者yyyy/mm/dd格式
+				startDate:'',
+				endDate:'',
+				betweenStart:'',
+				betweenEnd:'',
 			}
 		},
 		methods:{
-			//获取选择的日期回调数据
+			//获取回调的日期数据
 			getDate(date){
 				console.log(date)
 			}
@@ -67,30 +63,17 @@
 </script>
 ```
 ### 参数如下
-  *  :date：传入初始日期（默认当天）
-  *  :startDate：酒店\往返模式的入住日期
-  *  :endDate：酒店\往返模式的离开日期
-  *  :themeColor：日历的主题色，例:themeColor="'#FF6600'"(默认#415FFB)  
-  *  :mode：模式选择（默认1），1酒店模式，2往返模式
-  *  :preDisabled:默认（false），当设置为true时，所有小于初始日期（date和startDate）都disabled置灰
-  *  :lang(默认cn)，值包含中文版cn和英文版en
-  *  :initMonthCount 要初始多少个月份（默认6个月）最小1个月
-  *  :initPreMonthCount 初始化date或者startDate之前几个月的日历数据
-  *	 :allAbled="true"  解除日期范围外的disabled限制（比如今天之前的日期为disabled），即所有日期均都可操作
-  *	 :priceList='priceList' 添加价格日历列表
-  *	 :disabledList="disabledList" 设置不可点击的日期
-  *  :switchMonth="true" 当设置此值时，可以手动切换月份（上一月，下一月）  
-  
+  *  start-date（默认当天）
+  *  end-date 当mode=2、3的模式下为酒店\往返模式的离开日期
+  *  between-start 和 between-end 可以操作的日期范围
+  *  theme-color 日历的主题色，例 '#FF6600'或者简写'#f60'(默认#415FFB)
+  *  mode 模式选择（默认1标准模式），2酒店模式，3往返模式
+  *  title 日历顶部的tips提示
+  *  init-month 初始月份数（默认6个月）最小1个月
 
-```diff
 
-- 注意：date（日历模式）与startDate、endDate（酒店\往返日历模式）尽量不要共存
-- 要么 <Calendar :date="'2019-06-04'"  :themeColor="'#415FFB'" @callback="XXX" />
-- 要么 <Calendar :startDate="'2019-06-06'" :endDate="'2019-06-08'" :themeColor="'#415FFB'"  @callback="XXX" />
-```
 ### 回调函数
   *  @callback：日期选择后获取到的数据（所有你想要的都有）
-
 ***
-github链接
-[链接名称](https://github.com/tanagang/mobile-calendar-simple)
+
+
