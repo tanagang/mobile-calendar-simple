@@ -1,10 +1,9 @@
  同程艺龙-多种模式日历插件,支持标准选择模式、酒店入住离开模式、飞机往返模式，可自定义主题色
  * Calendar.vue 可以传参设置主题色，如theme-color="#ff6600"或者"#f60"（依赖less） 
 
-  ![](https://file.40017.cn/tcyp/tz/calendar1.png)
-  ![](https://file.40017.cn/tcyp/tz/calendar2.png)
-  ![](https://file.40017.cn/tcyp/tz/calendar3.png)
-  ![](https://file.40017.cn/tcyp/tz/calendar4.png)
+  ![](https://file.40017.cn/tcyp/tz/11.png)
+  ![](https://file.40017.cn/tcyp/tz/22.png)
+  ![](https://file.40017.cn/tcyp/tz/22.png)
 
   
   
