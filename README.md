@@ -1,5 +1,5 @@
  同程艺龙-多种模式日历插件,支持标准选择模式、酒店入住离开模式、飞机往返模式，可自定义主题色
- * Calendar.vue 可以传参设置主题色，如theme-color="#ff6600"或者"#f60"（依赖less），如果用sass可以在源代码style标签内修改
+ * Calendar.vue 可以传参设置主题色，如theme-color="#ff6600 或 #f60"（依赖less），如用sass可在源代码style标签内修改
 
   ![](https://file.40017.cn/tcyp/tz/11.png)
   ![](https://file.40017.cn/tcyp/tz/22.png)
