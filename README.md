@@ -1,5 +1,5 @@
  同程艺龙-多种模式日历插件,支持标准选择模式、酒店入住离开模式、飞机往返模式，可自定义主题色
- * Calendar.vue 可以传参设置主题色，如theme-color="#ff6600"或者"#f60"（依赖less） 
+ * Calendar.vue 可以传参设置主题色，如theme-color="#ff6600"或者"#f60"（依赖less），如果用sass可以在源代码style标签内修改
 
   ![](https://file.40017.cn/tcyp/tz/11.png)
   ![](https://file.40017.cn/tcyp/tz/22.png)
@@ -21,25 +21,25 @@ github链接
 若在vue-cli项目中安装：npm install mobile-calendar-simple -S （若使用uniapp的工具HBuilderX导入，可以忽略此步骤）
 ```javascript
 <template>
-	<div>
-		<!--用法一-->
-		<calendar @callback="getDate" /> 
-		<!--用法二（mode="2",酒店入住模式,mode="3",往返模式）start-date开始日期，end-date结束日期-->
-		<calendar :start-date="startDate" :end-date="endDate" mode="2"  @callback="getDate" />
-		<!--用法三,可以操作的日期范围-->
-		<calendar  :between-start="startDate" :between-end="endDate"  @callback="getDate" />
-		<!--设置主题色-->
-		<calendar :themeColor="'#FF6600'"  @callback="getDate" />
-		<!--如果需要solt-->
-		<calendar @callback="getDate">
-			<div>
-				...此处也支持slot注入（不需要可以忽略此div）
-			</div>
-		</calendar>
-	</div>
+<div>
+	<!--用法一-->
+	<calendar @callback="getDate" /> 
+	<!--用法二（mode="2",酒店入住模式,mode="3",往返模式）start-date开始日期，end-date结束日期-->
+	<calendar :start-date="startDate" :end-date="endDate" mode="2" @callback="getDate" />
+	<!--用法三,可以操作的日期范围-->
+	<calendar  :between-start="startDate" :between-end="endDate" @callback="getDate" />
+	<!--设置主题色-->
+	<calendar :themeColor="'#FF6600'"  @callback="getDate" />
+	<!--如果需要solt-->
+	<calendar @callback="getDate">
+		<div>
+			...此处也支持slot注入（不需要可以忽略此div）
+		</div>
+	</calendar>
+</div>
 </template>
 <script>
-	import Calendar from '@/components/mobile-calendar-simple/Calendar.vue'
+	import Calendar from 'mobile-calendar-simple'
 	export default {
 		data(){
 			return {//日期均为yyyy-mm-dd或者yyyy/mm/dd格式
