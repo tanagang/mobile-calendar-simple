@@ -79,8 +79,8 @@
                 endDates:'',
                 betweenStarts:'',
                 betweenEnds:'',
-                weekList: ['日', '一', '二', '三', '四', '五', '六'],
-                calendar: []
+                calendar: [],
+                weekList: ['日', '一', '二', '三', '四', '五', '六']
             }
         },
         mounted() {
@@ -109,7 +109,7 @@
                 this.endDates = this.resetTime(this.endDate)
                 this.betweenStarts = this.resetTime(this.betweenStart)
                 this.betweenEnds = this.resetTime(this.betweenEnd)
-     
+
                 this.createClendar(); //创建日历数据
             },
             //创建每个月日历数据，传入月份1号前面用null填充
@@ -137,10 +137,16 @@
             },
             //根据当天和结束日期创建日历数据
             createClendar() {
+                var yearTemp = this.year
+                var monthTemp = this.month
+                if(!!this.betweenStarts){//如果有范围起始日期，可选范围从betweenStart开始
+                    yearTemp = new Date(this.betweenStarts).getFullYear()
+                    monthTemp = new Date(this.betweenStarts).getMonth()+1
+                }
                 for (let i = 0; i < this.initMonth; i++) {
-                    let month = this.month + i,
-                        year = this.year,
-                        _monthData = {
+                    let year = yearTemp
+                    let month = monthTemp + i
+                    let  _monthData = {
                             dayList: [],
                             month: '',
                             year: ''
