@@ -22,7 +22,7 @@ github链接
 ```javascript
 <template>
 <div>
-	<!--用法一-->
+	<!--用法一,start-date省略即默认当天-->
 	<calendar @callback="getDate" /> 
 	<!--用法二（mode="2",酒店入住模式,mode="3",往返模式）start-date开始日期，end-date结束日期-->
 	<calendar :start-date="startDate" :end-date="endDate" mode="2" @callback="getDate" />

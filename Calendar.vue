@@ -343,12 +343,15 @@
                 if(this.mode==1){
                     this.$emit('callback',choose)
                 }else if(this.mode==2&&this.startDates && this.endDates){
+                    choose.dayCount = (this.endDates - this.startDates) / 24 / 3600 / 1000
                     choose.endStr = this.dateFormat(this.endDates)
                     this.$emit('callback',choose)
                 }else if(this.mode==3){
                     if (this.startDates && this.endDates) {
+                        choose.dayCount = (this.endDates - this.startDates) / 24 / 3600 / 1000
                         choose.endStr = this.dateFormat(this.endDates)
                     }else if(this.startDates&&!this.endDates){
+                        choose.dayCount = 0
                         choose.endStr = this.dateFormat(this.startDates)
                     }
                     this.$emit('callback',choose)
