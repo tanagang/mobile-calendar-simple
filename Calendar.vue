@@ -70,7 +70,7 @@
             },
             themeColor: {//主题色
 				type: [String],
-				default: '#415FFB'
+				default: ''
 			}
         },
         data() {
@@ -89,6 +89,7 @@
         computed: {
             //theme
 			getBetweenColor() {
+                if(!this.themeColor) return
                 var hex = this.themeColor
 				if (hex.length == 4) {
 					hex = `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`
@@ -202,6 +203,7 @@
             },
             //theme入住离开的区间背景色
             themeOpacityBg(day, month, year) {
+				if(!this.themeColor) return
                 if (!day) return
                 const _date = this.resetTime(year + "/" + month + "/" + day);
                 if (_date >= this.startDates && _date <= this.endDates && this.mode>1) {
@@ -210,6 +212,7 @@
             },
 			//theme获取普通日期选中样式背景
 			themeBg(day, month, year) {
+                if(!this.themeColor) return
 				const _date = this.resetTime(year + '/' + month + '/' + day)
                 //正常模式
                 if(this.mode == 1){
@@ -425,11 +428,12 @@
                 height: 40px;
             }
             .each-month {
-                display: inline-block;
+                display: block;
                 width: 98%;
-                margin-left: 1%;
-                padding-bottom: 10px;
                 font-size: 0;
+                margin:0 auto;
+                padding-left:0;
+                padding-bottom: 10px;
                 border-bottom:1px solid #F4F4F4;
                 .each-day {
                     position: relative;
