@@ -22,11 +22,11 @@ github链接
 ```javascript
 <template>
 <div>
-	<!--用法一,start-date省略即默认当天-->
+	<!--用法一：start-date省略即默认当天，当mode=2、3的模式下分别为（酒店\往返）的出发日期-->
 	<calendar @callback="getDate" /> 
-	<!--用法二（mode="2",酒店入住模式,mode="3",往返模式）start-date开始日期，end-date结束日期-->
+	<!--用法二：当mode=2、3的模式下分别为（酒店\往返）的离开日期-->
 	<calendar :start-date="startDate" :end-date="endDate" mode="2" @callback="getDate" />
-	<!--用法三,可以操作的日期范围-->
+	<!--用法三：可以操作的日期范围-->
 	<calendar  :between-start="startDate" :between-end="endDate" @callback="getDate" />
 	<!--设置主题色-->
 	<calendar :themeColor="'#FF6600'"  @callback="getDate" />
@@ -62,8 +62,8 @@ github链接
 </script>
 ```
 ### 参数如下
-  *  start-date（默认当天）
-  *  end-date 当mode=2、3的模式下为酒店\往返模式的离开日期
+  *  start-date 默认当天,当mode=2、3的模式下分别为（酒店\往返）的出发日期
+  *  end-date 当mode=2、3的模式下分别为（酒店\往返）的离开日期
   *  between-start 和 between-end 可以操作的日期范围
   *  theme-color 日历的主题色，例 '#FF6600'或者简写'#f60'(默认#415FFB)
   *  mode 模式选择（默认1标准模式），2酒店模式，3往返模式
