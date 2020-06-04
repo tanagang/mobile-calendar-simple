@@ -240,7 +240,7 @@
                     return;
                 }
                 const _date = this.resetTime(year + '/' + month + '/' + day)
-                let tip;
+                let tip = "";
 
                 if (_date == this.today) {
                     tip = '今天'
@@ -402,7 +402,8 @@
                     text-align: center;
                     height: 40px;
                     line-height: 40px;
-                    width: 14.2857143%;
+                    font-size:14px;
+                    width: 14.28%;
                     &:first-child,
                     &:last-child {
                         color: @color;
