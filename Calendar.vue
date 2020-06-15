@@ -47,7 +47,12 @@
             endDate: { //结束日期
                 type: [String, Object, Date],
                 default () {
-                    return ''
+                    var temp = new Date().getTime() + 24 * 60 * 60 * 1000
+                    var date = new Date(temp)
+                    const year = date.getFullYear(),
+                        month = date.getMonth()+1,
+                        day = date.getDate()
+                    return year+'/'+month+'/'+day
                 }
             },
             betweenStart: { //日历可选范围开始
@@ -384,11 +389,9 @@
             z-index: 9991;
             box-shadow: 0 2px 15px rgba(100,100,100,0.1);
             .calendar-title {
-                height: 28px;
-                line-height: 28px;
+                padding:6px 10px;
                 background: #fff7dc;
                 font-size: 12px;
-                padding-left: 15px;
                 color: #9e8052;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -400,8 +403,7 @@
                 span {
                     display: inline-block;
                     text-align: center;
-                    height: 40px;
-                    line-height: 40px;
+                    padding:12px 0;
                     font-size:14px;
                     width: 14.28%;
                     &:first-child,
@@ -414,7 +416,7 @@
         .calendar-wrapper {
             position: relative;
             color: #000;
-            padding-top:15px;
+            padding-top:10px;
             h3 {
                 position: sticky;
                 position: -webkit-sticky;
@@ -425,8 +427,7 @@
                 text-align: center;
                 font-size: 16px;
                 font-weight: 400;
-                line-height: 40px;
-                height: 40px;
+                padding:10px 0;
             }
             .each-month {
                 display: block;
@@ -449,9 +450,8 @@
                     div {
                         display: inline-block;
                         font-size:14px;
-                        height: 30px;
-                        width: 30px;
-                        line-height: 30px;
+                        padding:8px 0;
+                        width: 32px;
                     }
                     &.between {
                         background: rgba(75, 217, 173, 0.1);
@@ -487,7 +487,7 @@
                         width: 100%;
                         text-align: center;
                         color: @color;
-                        bottom: 2px;
+                        bottom: 0;
                         left: 0;
                     }
                 }
