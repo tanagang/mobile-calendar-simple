@@ -1,13 +1,13 @@
 <template>
 	<div class="calendar">
-		<div class="calendar-header">
+		<div class="header">
 			<div class="week-number">
 				<span v-for="(item,index) in weekList" :style="{color:(index==0||index==weekList.length-1)&&themeColor}" :key="index">{{item}}</span>
 			</div>
-            <p class="calendar-title" v-if="title">{{title}}</p>
+            <p class="tips" v-if="title">{{title}}</p>
 		</div>
         <p :style="{height:title?'68px':'40px'}"></p>
-        <div class="calendar-wrapper" v-for="(item,index) in calendar" :key="index">
+        <div class="content" v-for="(item,index) in calendar" :key="index">
             <h3 v-text="item.year + '年' + item.month + '月'"></h3>
             <ul class="each-month">
                 <li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :class="[addClassBg(day, item.month, item.year)]" :style="{background:themeOpacityBg(day, item.month, item.year)}" @click="chooseDate(day, item.month, item.year)">
@@ -388,14 +388,14 @@
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
         z-index:999;
-        .calendar-header {
+        .header {
             position: fixed;
             width: 100%;
-            top: 0;
+            top:0;
             left: 0;
             z-index: 9991;
             box-shadow: 0 2px 15px rgba(100,100,100,0.1);
-            .calendar-title {
+            .tips {
                 padding:6px 10px;
                 background: #fff7dc;
                 font-size: 12px;
@@ -420,20 +420,15 @@
                 }
             }
         }
-        .calendar-wrapper {
+        .content {
             position: relative;
             color: #000;
             padding-top:10px;
             h3 {
-                position: sticky;
-                position: -webkit-sticky;
-                z-index: 999;
                 width: 100%;
-                left: 0;
-                color:#000;
+                font-weight: normal;
                 text-align: center;
                 font-size: 16px;
-                font-weight: 400;
                 padding:10px 0;
             }
             .each-month {
@@ -501,5 +496,4 @@
             }
         }
     }
-    
 </style>
