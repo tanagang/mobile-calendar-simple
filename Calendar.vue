@@ -13,7 +13,7 @@
             <ul class="each-month">
                 <li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :class="[addClassBg(day, item.month, item.year)]" :style="{background:themeOpacityBg(day, item.month, item.year)}" @click="chooseDate(day, item.month, item.year)">
                     <div :class="[addClassName(day, item.month, item.year),{'trip-time': isCurrent(day, item.month, item.year)}]" :style="{background:themeBg(day, item.month, item.year)}">
-                        <p class="recent" v-text="setTip(day, item.month, item.year,1)"></p>
+                        <p class="day-tip" :style="{color:themeColor}" v-text="setTip(day, item.month, item.year,1)"></p>
                         <p class="day">{{day?day:''}}</p>
                         <p class="recent" v-text="setTip(day, item.month, item.year,2)"> </p>
                     </div>
@@ -512,6 +512,11 @@ export default {
             height:14px;
             line-height: 14px;
         }
+        .day-tip{
+            font-size:10px;
+            height:14px;
+            line-height: 14px;
+        }
         .recent {
           color: #ccc;
           font-size:10px;
@@ -529,15 +534,15 @@ export default {
           }
         }
         .today {
-          background: #e7e7e7;
+          background: rgba(100,100,100,0.1);
           border-radius: 4px;
         }
         .trip-time {
           background: @color;
           color: #fff !important;
           border-radius: 4px;
-         .recent{
-            color: #fff;
+         .recent,.day-tip{
+            color: #fff!important;
          }
         }
         .weekend {
