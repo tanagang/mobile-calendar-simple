@@ -1,18 +1,22 @@
 <template>
 	<div class="calendar-tz" id="calendar">
-		<div class="header-tz">
+		<div class="header">
 			<div class="week-number">
 				<span v-for="(item,index) in weekList" :style="{color:(index==0||index==weekList.length-1)&&themeColor}" :key="index">{{item}}</span>
 			</div>
             <p class="tips" v-if="title">{{title}}</p>
 		</div>
         <p :style="{height:title?'68px':'40px'}"></p>
-        <div class="content-tz" v-for="(item,index) in calendar" :key="index"  :id="item.year+''+item.month">
+        <div class="content" v-for="(item,index) in calendar" :key="index"  :id="item.year+''+item.month">
             <h3 v-text="item.year + '年' + item.month + '月'"></h3>
+            <span class="month-bg"  :style="{color:getBetweenColor}">{{item.month}}</span>
             <ul class="each-month">
                 <li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :class="[addClassBg(day, item.month, item.year)]" :style="{background:themeOpacityBg(day, item.month, item.year)}" @click="chooseDate(day, item.month, item.year)">
-                    <div :class="[addClassName(day, item.month, item.year),{'trip-time': isCurrent(day, item.month, item.year)}]" :style="{background:themeBg(day, item.month, item.year)}">{{day?day:''}}</div>
-                    <span class="recent" :style="{color:themeColor}" v-text="setTip(day, item.month, item.year)"></span>
+                    <div :class="[addClassName(day, item.month, item.year),{'trip-time': isCurrent(day, item.month, item.year)}]" :style="{background:themeBg(day, item.month, item.year)}">
+                        <p class="recent" v-text="setTip(day, item.month, item.year,1)"></p>
+                        <p class="day">{{day?day:''}}</p>
+                        <p class="recent" v-text="setTip(day, item.month, item.year,2)"> </p>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -67,7 +71,7 @@ export default {
     themeColor: {
         //主题色
         type: [String],
-        default: ""
+        default: "#415ffb"
     }
   },
   data() {
@@ -190,7 +194,7 @@ export default {
                 year += m - 1;
             }
             if (month > 12) {
-             month = month % 12 == 0 ? 12 : month % 12;
+                month = month % 12 == 0 ? 12 : month % 12;
             }
             if (month <= 0) {
                 month = 12 + month % 12;
@@ -276,43 +280,49 @@ export default {
         date.setMilliseconds(0);
         return date * 1;
     },
-    //设置今天，明天，后天
-    setTip(day, month, year) {
+    /***
+     * flag==1（返回今天，明天，后天)
+     * flag==2（返回入住，离开，去返)
+     */
+    setTip(day, month, year,flag) {//设置今天，明天，后天，入住，离开
         if (!day) return
         var tip = ""
         var _date = this.resetTime(year + "/" + month + "/" + day);
-        if (_date == this.today) {
-            tip = "今天";
-        } else if (_date - this.today == 24 * 3600 * 1000) {
-            tip = "明天";
-        } else if (_date - this.today == 2 * 24 * 3600 * 1000) {
-            tip = "后天";
-        }
-        if (this.mode == 2) {
-            if (_date == this.endDates) {
-                tip = "离开";
-            } else if (_date == this.startDates) {
-                tip = "入住";
+        if(flag==1){
+            if (_date == this.today) {
+                tip = "今天";
+            } else if (_date - this.today == 24 * 3600 * 1000) {
+                tip = "明天";
+            } else if (_date - this.today == 2 * 24 * 3600 * 1000) {
+                tip = "后天";
             }
-        } else if (this.mode == 3) {
-            if (_date == this.startDates && !this.endDates) {
-            tip = "去/返";
-            } else {
+            return tip
+        }else{
+            if (this.mode == 2) {
                 if (_date == this.endDates) {
-                    tip = "返程";
+                    tip = "离开";
                 } else if (_date == this.startDates) {
-                    tip = "去程";
+                    tip = "入住";
+                }
+            } else if (this.mode == 3) {
+                if (_date == this.startDates && !this.endDates) {
+                    tip = "去/返";
+                } else {
+                    if (_date == this.endDates) {
+                        tip = "返程";
+                    } else if (_date == this.startDates) {
+                        tip = "去程";
+                    }
                 }
             }
+            return tip;
         }
-        return tip;
     },
     isCurrent(day, month, year) {
       if (!day) {
         return false;
       }
       const _date = this.resetTime(year + "/" + month + "/" + day);
-
       //正常模式
       if (this.mode == 1) {
         if (_date == this.startDates) {
@@ -410,7 +420,7 @@ export default {
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
   z-index: 999;
-  .header-tz {
+  .header {
     position: fixed;
     width: 100%;
     top: 0;
@@ -442,16 +452,29 @@ export default {
       }
     }
   }
-  .content-tz {
-    position: relative;
-    color: #000;
+  .content {
+    color: #333;
     padding-top: 10px;
+    position: relative;
     h3 {
       width: 100%;
       font-weight: normal;
       text-align: center;
       font-size: 16px;
       padding: 10px 0;
+    }
+    .month-bg{
+        position: absolute;
+        text-align: center;
+        opacity: 0.4;
+        left:0;
+        right:0;
+        bottom:0;
+        top:20%;
+        z-index:-1;
+        font-size:220px;
+        font-weight: bold;
+        color:#f8f8f8;
     }
     .each-month {
       display: block;
@@ -460,7 +483,7 @@ export default {
       margin: 0 auto;
       padding-left: 0;
       padding-bottom: 10px;
-      border-bottom: 1px solid #f4f4f4;
+      border-bottom: 1px solid #eee;
       .each-day {
         position: relative;
         display: inline-block;
@@ -468,17 +491,32 @@ export default {
         vertical-align: middle;
         width: 14.28%;
         font-size: 16px;
-        height: 52px;
-        margin-top: 4px;
-        padding-top: 4px;
+        height: 50px;
+        margin:2px auto;
         div {
           display: inline-block;
           font-size: 14px;
-          padding: 8px 0;
-          width: 32px;
+          width:98%;
+          height:100%;
+          justify-content: space-around;
+          display: -webkit-box;
+          display: flex;
+          -webkit-flex-direction: column;
+          flex-direction: column;
         }
         &.between {
           background: rgba(75, 217, 173, 0.1);
+        }
+        .day{
+            font-size: 16px;
+            height:14px;
+            line-height: 14px;
+        }
+        .recent {
+          color: #ccc;
+          font-size:10px;
+          height:14px;
+          line-height: 14px;
         }
         .disabled {
           color: #ccc !important;
@@ -490,9 +528,6 @@ export default {
             background: none;
           }
         }
-        .disabled + .recent {
-          color: #ccc;
-        }
         .today {
           background: #e7e7e7;
           border-radius: 4px;
@@ -501,18 +536,12 @@ export default {
           background: @color;
           color: #fff !important;
           border-radius: 4px;
+         .recent{
+            color: #fff;
+         }
         }
         .weekend {
           color: @color;
-        }
-        .recent {
-          position: absolute;
-          font-size: 10px;
-          width: 100%;
-          text-align: center;
-          color: @color;
-          bottom: 0;
-          left: 0;
         }
       }
     }
