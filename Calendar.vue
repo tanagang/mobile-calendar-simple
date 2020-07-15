@@ -1,24 +1,25 @@
 <template>
-	<div class="calendar-tz" id="calendar">
+	<div class="calendar-tz" :class="fixed&&'fixed'" id="calendar">
 		<div class="header">
 			<div class="week-number">
 				<span v-for="(item,index) in weekList" :style="{color:(index==0||index==weekList.length-1)&&themeColor}" :key="index">{{item}}</span>
 			</div>
             <p class="tips" v-if="title">{{title}}</p>
 		</div>
-        <p :style="{height:title?'68px':'40px'}"></p>
-        <div class="content" v-for="(item,index) in calendar" :key="index"  :id="item.year+''+item.month">
-            <h3 v-text="item.year + '年' + item.month + '月'"></h3>
-            <span class="month-bg"  :style="{color:getBetweenColor}">{{item.month}}</span>
-            <ul class="each-month">
-                <li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :class="[addClassBg(day, item.month, item.year)]" :style="{background:themeOpacityBg(day, item.month, item.year)}" @click="chooseDate(day, item.month, item.year)">
-                    <div :class="[addClassName(day, item.month, item.year),{'trip-time': isCurrent(day, item.month, item.year)}]" :style="{background:themeBg(day, item.month, item.year)}">
-                        <p class="day-tip" :style="{color:themeColor}" v-text="setTip(day, item.month, item.year,1)"></p>
-                        <p class="day">{{day?day:''}}</p>
-                        <p class="recent" v-text="setTip(day, item.month, item.year,2)"> </p>
-                    </div>
-                </li>
-            </ul>
+        <div style="flex:1;overflow-y: scroll;-webkit-overflow-scrolling: touch;">
+            <div class="content" v-for="(item,index) in calendar" :key="index"  :id="item.year+''+item.month">
+                <h3 v-text="item.year + '年' + item.month + '月'"></h3>
+                <span class="month-bg"  :style="{color:getBetweenColor}">{{item.month}}</span>
+                <ul class="each-month">
+                    <li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :class="[addClassBg(day, item.month, item.year)]" :style="{background:themeOpacityBg(day, item.month, item.year)}" @click="chooseDate(day, item.month, item.year)">
+                        <div :class="[addClassName(day, item.month, item.year),{'trip-time': isCurrent(day, item.month, item.year)}]" :style="{background:themeBg(day, item.month, item.year)}">
+                            <p class="day-tip" :style="{color:themeColor}" v-text="setTip(day, item.month, item.year,1)"></p>
+                            <p class="day">{{day?day:''}}</p>
+                            <p class="recent" v-text="setTip(day, item.month, item.year,2)"> </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
         <slot></slot>
 	</div>
@@ -27,49 +28,49 @@
 <script>
 export default {
   props: {
-    title: {
+    title: {//头部的一段文本
         type: [String, Object],
         default() {
             return "";
         }
     },
-    mode: {
+    fixed: {//是否定位全屏
+        type: [Boolean],
+        default() {
+            return false;
+        }
+    },
+    mode: {//模式：1普通日历，2酒店，3飞机往返
         type: [String, Number],
         default() {
             return 1;
         }
     },
-    startDate: {
-        //开始日期
+    startDate: {//开始日期
         type: [String, Object, Date]
     },
-    endDate: {
-        //结束日期
+    endDate: {//结束日期
         type: [String, Object, Date]
     },
-    betweenStart: {
-        //日历可选范围开始
+    betweenStart: {//日历可选范围开始
         type: [String, Object, Date],
         default() {
             return "";
         }
     },
-    betweenEnd: {
-        //日历可选结束日期
+    betweenEnd: { //日历可选结束日期
         type: [String, Object, Date],
         default() {
             return "";
         }
     },
-    initMonth: {
-        //初始化的月数
+    initMonth: {//初始化的月数
         type: [String, Number],
         default() {
             return 6;
         }
     },
-    themeColor: {
-        //主题色
+    themeColor: {//主题色
         type: [String],
         default: "#415ffb"
     }
@@ -281,10 +282,9 @@ export default {
         return date * 1;
     },
     /***
-     * flag==1（返回今天，明天，后天)
-     * flag==2（返回入住，离开，去返)
+     * flag==1（返回今天，明天，后天)，flag==2（返回入住，离开，去返)
      */
-    setTip(day, month, year,flag) {//设置今天，明天，后天，入住，离开
+    setTip(day, month, year,flag) {
         if (!day) return
         var tip = ""
         var _date = this.resetTime(year + "/" + month + "/" + day);
@@ -411,145 +411,145 @@ export default {
 <style lang="less" scoped>
 @color: #415ffb;
 .calendar-tz {
-  width: 100%;
-  height: 100%;
-  background: #fff;
-  position: fixed;
-  left: 0;
-  top: 0;
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
-  z-index: 999;
-  .header {
-    position: fixed;
     width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 9991;
-    box-shadow: 0 2px 15px rgba(100, 100, 100, 0.1);
-    .tips {
-      padding: 6px 10px;
-      background: #fff7dc;
-      font-size: 12px;
-      color: #9e8052;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .week-number {
-      background: #fff;
-      padding: 0 1%;
-      span {
-        display: inline-block;
-        text-align: center;
-        padding: 12px 0;
-        font-size: 14px;
-        width: 14.28%;
-        &:first-child,
-        &:last-child {
-          color: @color;
-        }
-      }
-    }
-  }
-  .content {
-    color: #333;
-    padding-top: 10px;
-    position: relative;
-    h3 {
-      width: 100%;
-      font-weight: normal;
-      text-align: center;
-      font-size: 16px;
-      padding: 10px 0;
-    }
-    .month-bg{
-        position: absolute;
-        text-align: center;
-        opacity: 0.4;
+    height: 100vh;
+    background: #fff;
+    display: -webkit-box;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    &.fixed{
+        position: fixed;
+        width:100%;
+        height:100%;
         left:0;
-        right:0;
-        bottom:0;
-        top:20%;
-        z-index:-1;
-        font-size:220px;
-        font-weight: bold;
-        color:#f8f8f8;
+        top:0;
     }
-    .each-month {
-      display: block;
-      width: 98%;
-      font-size: 0;
-      margin: 0 auto;
-      padding-left: 0;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
-      .each-day {
+    .header {
+        box-shadow: 0 2px 15px rgba(100, 100, 100, 0.1);
+        .tips {
+            padding: 6px 10px;
+            background: #fff7dc;
+            font-size: 12px;
+            color: #9e8052;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .week-number {
+            background: #fff;
+            padding: 0 1%;
+            span {
+                display: inline-block;
+                text-align: center;
+                padding: 12px 0;
+                font-size: 14px;
+                width: 14.28%;
+                &:first-child,
+                &:last-child {
+                    color: @color;
+                }
+            }
+        }
+    }
+    .content {
+        color: #333;
+        padding-top: 10px;
         position: relative;
-        display: inline-block;
-        text-align: center;
-        vertical-align: middle;
-        width: 14.28%;
-        font-size: 16px;
-        height: 50px;
-        margin:2px auto;
-        div {
-          display: inline-block;
-          font-size: 14px;
-          width:98%;
-          height:100%;
-          justify-content: space-around;
-          display: -webkit-box;
-          display: flex;
-          -webkit-flex-direction: column;
-          flex-direction: column;
-        }
-        &.between {
-          background: rgba(75, 217, 173, 0.1);
-        }
-        .day{
+        h3 {
+            width: 100%;
+            font-weight: normal;
+            text-align: center;
             font-size: 16px;
-            height:14px;
-            line-height: 14px;
+            padding: 10px 0;
         }
-        .day-tip{
-            font-size:10px;
-            height:14px;
-            line-height: 14px;
+        .month-bg{
+            position: absolute;
+            text-align: center;
+            opacity: 0.4;
+            left:0;
+            right:0;
+            bottom:0;
+            top:20%;
+            z-index:-1;
+            font-size:220px;
+            font-weight: bold;
+            color:#f8f8f8;
         }
-        .recent {
-          color: #ccc;
-          font-size:10px;
-          height:14px;
-          line-height: 14px;
+        .each-month {
+            display: block;
+            width: 98%;
+            font-size: 0;
+            margin: 0 auto;
+            padding-left: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            .each-day {
+                position: relative;
+                display: inline-block;
+                text-align: center;
+                vertical-align: middle;
+                width: 14.28%;
+                font-size: 16px;
+                height: 50px;
+                margin:2px auto;
+                div {
+                    display: inline-block;
+                    font-size: 14px;
+                    width:98%;
+                    height:100%;
+                    justify-content: space-around;
+                    display: -webkit-box;
+                    display: flex;
+                    -webkit-flex-direction: column;
+                    flex-direction: column;
+                }
+                &.between {
+                    background: rgba(75, 217, 173, 0.1);
+                }
+                .day{
+                    font-size: 16px;
+                    height:14px;
+                    line-height: 14px;
+                }
+                .day-tip{
+                    font-size:10px;
+                    height:14px;
+                    line-height: 14px;
+                }
+                .recent {
+                    color: #ccc;
+                    font-size:10px;
+                    height:14px;
+                    line-height: 14px;
+                }
+                .disabled {
+                    color: #ccc !important;
+                    &.trip-time {
+                        background: #e7e7e7;
+                    }
+                    &.today {
+                        color: #ccc !important;
+                        background: none;
+                    }
+                }
+                .today {
+                    background: rgba(100,100,100,0.1);
+                    border-radius: 4px;
+                }
+                .trip-time {
+                    background: @color;
+                    color: #fff !important;
+                    border-radius: 4px;
+                    .recent,.day-tip{
+                        color: #fff!important;
+                    }
+                }
+                .weekend {
+                    color: @color;
+                }
+            }
         }
-        .disabled {
-          color: #ccc !important;
-          &.trip-time {
-            background: #e7e7e7;
-          }
-          &.today {
-            color: #ccc !important;
-            background: none;
-          }
-        }
-        .today {
-          background: rgba(100,100,100,0.1);
-          border-radius: 4px;
-        }
-        .trip-time {
-          background: @color;
-          color: #fff !important;
-          border-radius: 4px;
-         .recent,.day-tip{
-            color: #fff!important;
-         }
-        }
-        .weekend {
-          color: @color;
-        }
-      }
     }
-  }
 }
 </style>
