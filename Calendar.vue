@@ -1,13 +1,12 @@
 <template>
-	<div class="calendar-tz" :class="fixed&&'fixed'" id="calendar">
-		<div class="header">
-			<div class="week-number">
-				<span v-for="(item,index) in weekList" :style="{color:(index==0||index==weekList.length-1)&&themeColor}" :key="index">{{item}}</span>
-			</div>
-            <p class="tips" v-if="title">{{title}}</p>
-		</div>
-        <div style="flex:1;overflow-y: scroll;-webkit-overflow-scrolling: touch;">
-            <div class="content" v-for="(item,index) in calendar" :key="index"  :id="item.year+''+item.month">
+	<div class="calendar-tz" :class="isFixed&&'fixed'">
+        <slot name="header"></slot>
+        <div class="week-number">
+            <span v-for="(item,index) in weekList" :style="{color:(index==0||index==weekList.length-1)&&themeColor}" :key="index">{{item}}</span>
+        </div>
+        <p class="tips" v-if="title">{{title}}</p>
+        <div class="content" id="scrollWrap">
+            <div class="con" v-for="(item,index) in calendar" :key="index"  :id="item.year+''+item.month">
                 <h3 v-text="item.year + '年' + item.month + '月'"></h3>
                 <span class="month-bg"  :style="{color:getBetweenColor}">{{item.month}}</span>
                 <ul class="each-month">
@@ -21,7 +20,7 @@
                 </ul>
             </div>
         </div>
-        <slot></slot>
+        <slot name="footer"></slot>
 	</div>
 </template>
 
@@ -34,7 +33,7 @@ export default {
             return "";
         }
     },
-    fixed: {//是否定位全屏
+    isFixed: {//是否定位全屏
         type: [Boolean],
         default() {
             return false;
@@ -164,7 +163,6 @@ export default {
     //计算传入月份有多少天
     getDayNum(month, year) {
         let dayNum = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
         if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
             dayNum[1] = 29;
         }
@@ -214,7 +212,7 @@ export default {
         var id = year + "" + parseInt(month)
         setTimeout(() => {
             var objTop = document.getElementById(id).offsetTop;
-            var wrap = document.getElementById("calendar");
+            var wrap = document.getElementById("scrollWrap");
             wrap.scrollTop = objTop - 40;
         }, 20);
     },
@@ -424,129 +422,134 @@ export default {
         height:100%;
         left:0;
         top:0;
+        z-index: 900;
     }
-    .header {
+    .week-number {
+        background: #fff;
+        padding: 0 1%;
         box-shadow: 0 2px 15px rgba(100, 100, 100, 0.1);
-        .tips {
-            padding: 6px 10px;
-            background: #fff7dc;
-            font-size: 12px;
-            color: #9e8052;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .week-number {
-            background: #fff;
-            padding: 0 1%;
-            span {
-                display: inline-block;
-                text-align: center;
-                padding: 12px 0;
-                font-size: 14px;
-                width: 14.28%;
-                &:first-child,
-                &:last-child {
-                    color: @color;
-                }
+        span {
+            display: inline-block;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 14px;
+            width: 14.28%;
+            &:first-child,
+            &:last-child {
+                color: @color;
             }
         }
     }
-    .content {
-        color: #333;
-        padding-top: 10px;
-        position: relative;
-        h3 {
-            width: 100%;
-            font-weight: normal;
-            text-align: center;
-            font-size: 16px;
-            padding: 10px 0;
-        }
-        .month-bg{
-            position: absolute;
-            text-align: center;
-            opacity: 0.4;
-            left:0;
-            right:0;
-            bottom:0;
-            top:20%;
-            z-index:-1;
-            font-size:220px;
-            font-weight: bold;
-            color:#f8f8f8;
-        }
-        .each-month {
-            display: block;
-            width: 98%;
-            font-size: 0;
-            margin: 0 auto;
-            padding-left: 0;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            .each-day {
-                position: relative;
-                display: inline-block;
+    .tips {
+        padding: 6px 10px;
+        background: #fff7dc;
+        font-size: 12px;
+        color: #9e8052;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .content{
+        -webkit-box-flex: 1;
+        flex:1;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+         .con {
+            color: #333;
+            padding-top: 10px;
+            position: relative;
+            h3 {
+                width: 100%;
+                font-weight: normal;
                 text-align: center;
-                vertical-align: middle;
-                width: 14.28%;
                 font-size: 16px;
-                height: 50px;
-                margin:2px auto;
-                div {
+                padding: 10px 0;
+            }
+            .month-bg{
+                position: absolute;
+                text-align: center;
+                opacity: 0.4;
+                left:0;
+                right:0;
+                bottom:0;
+                top:20%;
+                z-index:-1;
+                font-size:220px;
+                font-weight: bold;
+                color:#f8f8f8;
+            }
+            .each-month {
+                display: block;
+                width: 98%;
+                font-size: 0;
+                margin: 0 auto;
+                padding-left: 0;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #eee;
+                .each-day {
+                    position: relative;
                     display: inline-block;
-                    font-size: 14px;
-                    width:98%;
-                    height:100%;
-                    justify-content: space-around;
-                    display: -webkit-box;
-                    display: flex;
-                    -webkit-flex-direction: column;
-                    flex-direction: column;
-                }
-                &.between {
-                    background: rgba(75, 217, 173, 0.1);
-                }
-                .day{
+                    text-align: center;
+                    vertical-align: middle;
+                    width: 14.28%;
                     font-size: 16px;
-                    height:14px;
-                    line-height: 14px;
-                }
-                .day-tip{
-                    font-size:10px;
-                    height:14px;
-                    line-height: 14px;
-                }
-                .recent {
-                    color: #ccc;
-                    font-size:10px;
-                    height:14px;
-                    line-height: 14px;
-                }
-                .disabled {
-                    color: #ccc !important;
-                    &.trip-time {
-                        background: #e7e7e7;
+                    height: 50px;
+                    margin:2px auto;
+                    div {
+                        display: inline-block;
+                        font-size: 14px;
+                        width:98%;
+                        height:100%;
+                        justify-content: space-around;
+                        display: -webkit-box;
+                        display: flex;
+                        -webkit-flex-direction: column;
+                        flex-direction: column;
                     }
-                    &.today {
+                    &.between {
+                        background: rgba(75, 217, 173, 0.1);
+                    }
+                    .day{
+                        font-size: 16px;
+                        height:14px;
+                        line-height: 14px;
+                    }
+                    .day-tip{
+                        font-size:10px;
+                        height:14px;
+                        line-height: 14px;
+                    }
+                    .recent {
+                        color: #ccc;
+                        font-size:10px;
+                        height:14px;
+                        line-height: 14px;
+                    }
+                    .disabled {
                         color: #ccc !important;
-                        background: none;
+                        &.trip-time {
+                            background: #e7e7e7;
+                        }
+                        &.today {
+                            color: #ccc !important;
+                            background: none;
+                        }
                     }
-                }
-                .today {
-                    background: rgba(100,100,100,0.1);
-                    border-radius: 4px;
-                }
-                .trip-time {
-                    background: @color;
-                    color: #fff !important;
-                    border-radius: 4px;
-                    .recent,.day-tip{
-                        color: #fff!important;
+                    .today {
+                        background: rgba(100,100,100,0.1);
+                        border-radius: 4px;
                     }
-                }
-                .weekend {
-                    color: @color;
+                    .trip-time {
+                        background: @color;
+                        color: #fff !important;
+                        border-radius: 4px;
+                        .recent,.day-tip{
+                            color: #fff!important;
+                        }
+                    }
+                    .weekend {
+                        color: @color;
+                    }
                 }
             }
         }

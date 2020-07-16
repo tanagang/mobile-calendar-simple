@@ -22,8 +22,8 @@ github链接
 ```javascript
 <template>
 <div>
-	<!--用法一：start-date省略即默认当天,fixed是否全屏定位显示，默认false -->
-	<calendar @callback="getDate" fixed="true" /> 
+	<!--用法一：start-date省略即默认当天,isFixed是否全屏定位显示，默认false -->
+	<calendar @callback="getDate" :isFixed="true" /> 
 	<!--用法二：当mode=2、3的模式下分别为（酒店\往返）的离开日期-->
 	<calendar :start-date="startDate" :end-date="endDate" mode="2" @callback="getDate" />
 	<!--用法三：可以操作的日期范围-->
@@ -31,10 +31,14 @@ github链接
 	<!--设置主题色-->
 	<calendar :themeColor="'#FF6600'"  @callback="getDate" />
 	<!--如果需要solt-->
-	<calendar @callback="getDate">
-		<div>
-			...此处也支持slot注入（不需要可以忽略此div）
-		</div>
+	<calendar>
+		...此处也支持slot注入（不需要可以忽略）
+		<template v-slot:header>
+			<div>我是头部</div>
+		</template>
+		<template v-slot:footer>
+			<div>我是脚部</div>
+		</template>
 	</calendar>
 </div>
 </template>
@@ -69,7 +73,7 @@ github链接
   *  mode 模式选择（默认1标准模式），2酒店模式，3往返模式
   *  init-month 初始月份数（默认6个月）最小1个月
   *  title 日历顶部的一段文本
-  *  fixed 日历是否定位全屏显示，默认false
+  *  isFixed 日历是否定位全屏显示，默认false
 
 
 ### 回调函数
