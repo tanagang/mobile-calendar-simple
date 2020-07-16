@@ -11,7 +11,7 @@
                 <span class="month-bg"  :style="{color:getBetweenColor}">{{item.month}}</span>
                 <ul class="each-month">
                     <li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :class="[addClassBg(day, item.month, item.year)]" :style="{background:themeOpacityBg(day, item.month, item.year)}" @click="chooseDate(day, item.month, item.year)">
-                        <div :class="[addClassName(day, item.month, item.year),{'trip-time': isCurrent(day, item.month, item.year)}]" :style="{background:themeBg(day, item.month, item.year)}">
+                        <div :class="[addClassName(day, item.month, item.year)]" :style="{background:themeBg(day, item.month, item.year)}">
                             <p class="day-tip" :style="{color:themeColor}" v-text="setTip(day, item.month, item.year,1)"></p>
                             <p class="day">{{day?day:''}}</p>
                             <p class="recent" v-text="setTip(day, item.month, item.year,2)"> </p>
@@ -227,6 +227,15 @@ export default {
         if (_date * 1 == this.today) {
             className.push("today");
         }
+        if (this.mode == 1) {
+            if (_date * 1 == this.startDates) {
+                className.push("trip-time");
+            }
+        } else {
+            if (_date * 1 == this.startDates || _date * 1 == this.endDates) {
+                className.push("trip-time");
+            }
+        }
         if (this.betweenStarts) {
             _date * 1 < this.betweenStarts && className.push("disabled");
         } else {
@@ -279,9 +288,7 @@ export default {
         date.setMilliseconds(0);
         return date * 1;
     },
-    /***
-     * flag==1（返回今天，明天，后天)，flag==2（返回入住，离开，去返)
-     */
+    //flag==1（返回今天，明天，后天)，flag==2（返回入住，离开，去返)
     setTip(day, month, year,flag) {
         if (!day) return
         var tip = ""
@@ -316,6 +323,7 @@ export default {
             return tip;
         }
     },
+    //是否是选中当天，或者入住离开当天
     isCurrent(day, month, year) {
       if (!day) {
         return false;
