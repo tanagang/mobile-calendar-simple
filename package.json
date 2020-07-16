@@ -1,6 +1,6 @@
 {
   "name": "mobile-calendar-simple",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "同程艺龙-多种模式日历插件,支持标准选择模式、酒店入住离开模式、飞机往返模式，可自定义主题色",
   "main": "Calendar.vue",
   "scripts": {

@@ -23,7 +23,7 @@ github链接
 <template>
 <div>
 	<!--用法一：start-date省略即默认当天,isFixed是否全屏定位显示，默认false -->
-	<calendar @callback="getDate" :isFixed="true" /> 
+	<calendar :start-date='startDate' :isFixed="true"  @callback="getDate" /> 
 	<!--用法二：当mode=2、3的模式下分别为（酒店\往返）的离开日期-->
 	<calendar :start-date="startDate" :end-date="endDate" mode="2" @callback="getDate" />
 	<!--用法三：可以操作的日期范围-->
