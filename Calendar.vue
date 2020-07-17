@@ -12,9 +12,9 @@
                 <ul class="each-month">
                     <li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :class="[addClassBg(day, item.month, item.year)]" :style="{background:themeOpacityBg(day, item.month, item.year)}" @click="chooseDate(day, item.month, item.year)">
                         <div :class="[addClassName(day, item.month, item.year)]" :style="{background:themeBg(day, item.month, item.year)}">
-                            <p class="day-tip" :style="{color:themeColor}" v-text="setTip(day, item.month, item.year,1)"></p>
+                            <p class="day-tip" :style="{color:themeColor}"><i v-text="setTip(day, item.month, item.year,1)"></i></p>
                             <p class="day">{{day?day:''}}</p>
-                            <p class="recent" v-text="setTip(day, item.month, item.year,2)"> </p>
+                            <p class="recent"><i v-text="setTip(day, item.month, item.year,2)"></i></p>
                         </div>
                     </li>
                 </ul>
@@ -96,7 +96,7 @@ export default {
     this.init();
   },
   computed: {
-    //theme
+    //设置主题色入住离开之间的背景色
     getBetweenColor() {
         if (!this.themeColor) return;
         var hex = this.themeColor;
@@ -203,7 +203,7 @@ export default {
             _monthData.dayList = this.createDayList(month, year);
             this.calendar.push(_monthData);
         }
-        //如果设置了between-start，默认页面加载到今天的位置，而不是between-start的位置
+        //h5默认页面加载到当前日期start-date的位置
         if (document) {
             this.scrollTop(this.startYear, this.startMonth);
         }
@@ -513,44 +513,33 @@ export default {
                         display: flex;
                         -webkit-flex-direction: column;
                         flex-direction: column;
+                        border-radius: 4px;
                     }
                     &.between {
                         background: rgba(75, 217, 173, 0.1);
                     }
                     .day{
                         font-size: 16px;
-                        height:14px;
-                        line-height: 14px;
                     }
-                    .day-tip{
+                    .day-tip,.recent{
                         font-size:10px;
                         height:14px;
-                        line-height: 14px;
+                        i{
+                            font-size:10px;
+                        }
                     }
                     .recent {
                         color: #ccc;
-                        font-size:10px;
-                        height:14px;
-                        line-height: 14px;
                     }
                     .disabled {
                         color: #ccc !important;
-                        &.trip-time {
-                            background: #e7e7e7;
-                        }
-                        &.today {
-                            color: #ccc !important;
-                            background: none;
-                        }
                     }
                     .today {
                         background: rgba(100,100,100,0.1);
-                        border-radius: 4px;
                     }
                     .trip-time {
                         background: @color;
                         color: #fff !important;
-                        border-radius: 4px;
                         .recent,.day-tip{
                             color: #fff!important;
                         }
