@@ -74,6 +74,7 @@ github链接
   *  between-start 和 between-end 可以操作的日期范围
   *  theme-color 日历的主题色，例 '#FF6600'或者简写'#f60'(默认#415FFB)
   *  mode 模式选择（默认1标准模式），2酒店模式，3往返模式
+  *  transition 支持动画，属性为slide
   *  init-month 初始月份数（默认6个月）最小1个月
   *  title 日历顶部的一段文本
   *  is-fixed 日历是否定位全屏显示，默认true
