@@ -1,42 +1,56 @@
 <template>
-	<div class="calendar-tz" :class="isFixed&&'fixed'">
-        <slot name="header"></slot>
-        <div class="week-number">
-            <span v-for="(item,index) in weekList" :style="{color:(index==0||index==weekList.length-1)&&themeColor}" :key="index">{{item}}</span>
-        </div>
-        <p class="tips" v-if="title">{{title}}</p>
-        <div class="content" id="scrollWrap">
-            <div class="con" v-for="(item,index) in calendar" :key="index"  :id="item.year+''+item.month">
-                <h3 v-text="item.year + '年' + item.month + '月'"></h3>
-                <span class="month-bg"  :style="{color:getBetweenColor}">{{item.month}}</span>
-                <ul class="each-month">
-                    <li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :class="[addClassBg(day, item.month, item.year)]" :style="{background:themeOpacityBg(day, item.month, item.year)}" @click="chooseDate(day, item.month, item.year)">
-                        <div :class="[addClassName(day, item.month, item.year)]" :style="{background:themeBg(day, item.month, item.year)}">
-                            <p class="day-tip" :style="{color:themeColor}"><i v-text="setTip(day, item.month, item.year,1)"></i></p>
-                            <p class="day">{{day?day:''}}</p>
-                            <p class="recent"><i v-text="setTip(day, item.month, item.year,2)"></i></p>
-                        </div>
-                    </li>
-                </ul>
+    <transition :name="transition">
+        <div class="calendar-tz" v-show="isShow" :class="isFixed&&'fixed'">
+            <slot name="header"></slot>
+            <div class="week-number">
+                <span v-for="(item,index) in weekList" :style="{color:(index==0||index==weekList.length-1)&&themeColor}" :key="index">{{item}}</span>
             </div>
+            <p class="tips" v-if="title">{{title}}</p>
+            <div class="content" id="scrollWrap">
+                <div class="con" v-for="(item,index) in calendar" :key="index"  :id="item.year+''+item.month">
+                    <h3 v-text="item.year + '年' + item.month + '月'"></h3>
+                    <span class="month-bg"  :style="{color:getBetweenColor}">{{item.month}}</span>
+                    <ul class="each-month">
+                        <li class="each-day" v-for="(day,idx) in item.dayList" :key="idx" :class="[addClassBg(day, item.month, item.year)]" :style="{background:themeOpacityBg(day, item.month, item.year)}" @click="chooseDate(day, item.month, item.year)">
+                            <div :class="[addClassName(day, item.month, item.year)]" :style="{background:themeBg(day, item.month, item.year)}">
+                                <p class="day-tip" :style="{color:themeColor}"><i v-text="setTip(day, item.month, item.year,1)"></i></p>
+                                <p class="day">{{day?day:''}}</p>
+                                <p class="recent"><i v-text="setTip(day, item.month, item.year,2)"></i></p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <slot name="footer"></slot>
         </div>
-        <slot name="footer"></slot>
-	</div>
+    </transition>
 </template>
 
 <script>
 export default {
   props: {
-    title: {//头部的一段文本
-        type: [String, Object],
+    isShow: {//是否显示
+        type: [Boolean],
         default() {
-            return "";
+            return false;
         }
     },
     isFixed: {//是否定位全屏
         type: [Boolean],
         default() {
-            return false;
+            return true;
+        }
+    },
+    transition: {//动画类型slide
+        type: [String],
+        default() {
+            return "";
+        }
+    },
+    title: {//头部的一段文本
+        type: [String, Object],
+        default() {
+            return "";
         }
     },
     mode: {//模式：1普通日历，2酒店，3飞机往返
@@ -85,10 +99,13 @@ export default {
     };
   },
   watch: {
-    betweenStart(v) {
+    isShow() {
         this.init();
     },
-    betweenEnd(v) {
+    betweenStart() {
+        this.init();
+    },
+    betweenEnd() {
         this.init();
     }
   },
@@ -151,7 +168,6 @@ export default {
         const count = this.getDayNum(month, year),
         _week = new Date(year + "/" + month + "/1").getDay();
         let list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28];
-
         for (let i = 29; i <= count; i++) {
             list.push(i);
         }
@@ -211,10 +227,11 @@ export default {
     scrollTop(year, month) {
         var id = year + "" + parseInt(month)
         setTimeout(() => {
-            var objTop = document.getElementById(id).offsetTop;
+            var obj = document.getElementById(id)
+            if(!obj) return
             var wrap = document.getElementById("scrollWrap");
-            wrap.scrollTop = objTop - 40;
-        }, 20);
+            wrap.scrollTop = obj.offsetTop - 40;
+        }, 0);
     },
     //添加日历样式
     addClassName(day, month, year) {
@@ -481,7 +498,6 @@ export default {
                 right:0;
                 bottom:0;
                 top:20%;
-                z-index:-1;
                 font-size:220px;
                 font-weight: bold;
                 color:#f8f8f8;
@@ -551,5 +567,16 @@ export default {
             }
         }
     }
+}
+/***右侧进入动画***/
+.slide-enter-active,
+.slide-leave-active {
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+.slide-enter,
+.slide-leave-to {
+  -webkit-transform: translateX(100%);
+  transform: translateX(100%);
 }
 </style>

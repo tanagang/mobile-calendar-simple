@@ -22,16 +22,18 @@ github链接
 ```javascript
 <template>
 <div>
-	<!--用法一：start-date省略即默认当天,isFixed是否全屏定位显示，默认false -->
-	<calendar :start-date='startDate' :isFixed="true"  @callback="getDate" /> 
+	<!--用法一：start-date省略即默认当天 -->
+	<calendar :is-show="true" :start-date='startDate'  @callback="getDate" /> 
 	<!--用法二：当mode=2、3的模式下分别为（酒店\往返）的离开日期-->
-	<calendar :start-date="startDate" :end-date="endDate" mode="2" @callback="getDate" />
+	<calendar :is-show="true" :start-date="startDate" :end-date="endDate" mode="2" @callback="getDate" />
 	<!--用法三：可以操作的日期范围-->
-	<calendar  :between-start="startDate" :between-end="endDate" @callback="getDate" />
+	<calendar :is-show="true" :between-start="startDate" :between-end="endDate" @callback="getDate" />
+	<!--设置动画transition="'slide'"且目前仅支持slide -->
+	<calendar :is-show="true" :transition="'slide'"  @callback="getDate" />
 	<!--设置主题色-->
-	<calendar :themeColor="'#FF6600'"  @callback="getDate" />
+	<calendar  :is-show="true" :theme-color="'#FF6600'"  @callback="getDate" />
 	<!--如果需要solt-->
-	<calendar>
+	<calendar :is-show="true">
 		...此处也支持slot注入（不需要可以忽略）
 		<template v-slot:header>
 			<div>我是头部</div>
@@ -66,6 +68,7 @@ github链接
 </script>
 ```
 ### 参数如下
+  *  is-show 控制控件的显示隐藏，模式false
   *  start-date 默认当天,当mode=2、3的模式下分别为（酒店\往返）的出发日期
   *  end-date 当mode=2、3的模式下分别为（酒店\往返）的离开日期
   *  between-start 和 between-end 可以操作的日期范围
@@ -73,7 +76,7 @@ github链接
   *  mode 模式选择（默认1标准模式），2酒店模式，3往返模式
   *  init-month 初始月份数（默认6个月）最小1个月
   *  title 日历顶部的一段文本
-  *  isFixed 日历是否定位全屏显示，默认false
+  *  is-fixed 日历是否定位全屏显示，默认true
 
 
 ### 回调函数
