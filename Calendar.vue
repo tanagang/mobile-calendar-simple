@@ -1,6 +1,6 @@
 <template>
     <transition :name="transition">
-        <div class="calendar-tz" v-show="isShow" :class="isFixed&&'fixed'">
+        <div class="calendar-tz" v-if="isShow" :class="isFixed&&'fixed'">
             <slot name="header"></slot>
             <div class="week-number">
                 <span v-for="(item,index) in weekList" :style="{color:(index==0||index==weekList.length-1)&&themeColor}" :key="index">{{item}}</span>
