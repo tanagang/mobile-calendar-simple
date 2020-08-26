@@ -85,7 +85,7 @@ export default {
     },
     themeColor: {//主题色
         type: [String],
-        default: "#415ffb"
+        default: "#1C75FF"
     }
   },
   data() {
@@ -432,7 +432,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@color: #415ffb;
+@color: #1C75FF;
 .calendar-tz {
     width: 100%;
     height: 100vh;
