@@ -145,14 +145,14 @@ export default {
             this.startMonth = dd[1];
         }
         if (!this.endDate) {
-            var temp = this.startDates + 24 * 60 * 60 * 1000;
-            var dateTemp = new Date(temp);
-            const year = dateTemp.getFullYear(),
-                month = dateTemp.getMonth() + 1,
-                day = dateTemp.getDate();
-            this.endDates = this.resetTime(year + "/" + month + "/" + day);
-            this.endYear = year;
-            this.endMonth = month;
+            // var temp = this.startDates + 24 * 60 * 60 * 1000;
+            // var dateTemp = new Date(temp);
+            // const year = dateTemp.getFullYear(),
+            //     month = dateTemp.getMonth() + 1,
+            //     day = dateTemp.getDate();
+            // this.endDates = this.resetTime(year + "/" + month + "/" + day);
+            // this.endYear = year;
+            // this.endMonth = month;
         } else {
             this.endDates = this.resetTime(this.endDate);
             var dd = this.endDate.replace(/-/g, "/").split("/");
@@ -549,6 +549,9 @@ export default {
                     }
                     .disabled {
                         color: #ccc !important;
+                        .day-tip{
+                            color: #ccc !important;
+                        }
                     }
                     .today {
                         background: rgba(100,100,100,0.1);
