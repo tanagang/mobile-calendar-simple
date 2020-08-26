@@ -72,7 +72,7 @@ github链接
   *  start-date 默认当天,当mode=2、3的模式下分别为（酒店\往返）的出发日期
   *  end-date 当mode=2、3的模式下分别为（酒店\往返）的离开日期
   *  between-start 和 between-end 可以操作的日期范围
-  *  theme-color 日历的主题色，例 '#FF6600'或者简写'#f60'(默认#415FFB)
+  *  theme-color 日历的主题色，例 '#FF6600'或者简写'#f60'(默认#1C75FF)
   *  mode 模式选择（默认1标准模式），2酒店模式，3往返模式
   *  transition 支持动画，属性为slide
   *  init-month 初始月份数（默认6个月）最小1个月
